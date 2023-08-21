@@ -7,6 +7,7 @@ package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
@@ -17,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
 
     // Gamepads
-    public final Gamepad driver = new AutoGamepad(Ports.Gamepad.DRIVER);
-    public final Gamepad operator = new AutoGamepad(Ports.Gamepad.OPERATOR);
+    public final Gamepad driver = new BootlegXbox(Ports.Gamepad.DRIVER);
+    public final Gamepad operator = new BootlegXbox(Ports.Gamepad.OPERATOR);
     
     // Subsystem
 
