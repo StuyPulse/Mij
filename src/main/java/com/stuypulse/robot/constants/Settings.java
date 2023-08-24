@@ -16,4 +16,8 @@ import com.stuypulse.stuylib.network.SmartNumber;
  */
 public interface Settings {
 	double DT = 0.02;
+    public interface Intake {
+        SmartNumber STALL_TIME = new SmartNumber("Intake/Stall Time (Rising)", 0.05);
+        SmartNumber STALL_CURRENT = new SmartNumber("Intake/Stall Current", 35);
+    }
 }
