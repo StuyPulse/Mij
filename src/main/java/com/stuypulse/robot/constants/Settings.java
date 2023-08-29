@@ -53,7 +53,6 @@ public interface Settings {
 			int MOTORS = 1;
 
 			Rotation2d ZERO_ANGLE = Rotation2d.fromRotations(0);
-			SmartNumber WRIST_SAFE_ANGLE = new SmartNumber("Arm/Wrist/Safe Angle (deg)", 0);
 			SmartNumber TELEOP_MAX_VELOCITY = new SmartNumber("Arm/Wrist/Teleop Max Velocity (deg)", 0);
             SmartNumber TELEOP_MAX_ACCELERATION = new SmartNumber("Arm/Wrist/Teleop Max Acceleration (deg)", 0);
 
