@@ -14,35 +14,41 @@ import com.stuypulse.stuylib.streams.booleans.filters.BDebounce;
 
 public class IntakeImpl extends Intake {
 
-    private CANSparkMax motor;
+    private final CANSparkMax motor;
 
-    private BStream stalling;
+    private final BStream stalling;
 
-    private boolean acquiring;
+    private State state;
 
-    public State mState = State.IDLE;
-
-    private boolean hasGamePiece = false;
+    private boolean hasGamePiece;
 
     protected IntakeImpl() {
         motor = new CANSparkMax(MOTOR, MotorType.kBrushless);
 
         MOTOR_CONFIG.configure(motor);
 
+        state = State.IDLE;
+
+        hasGamePiece = false;
+
         stalling = BStream.create(this::isMomentarilyStalling)
             .filtered(new BDebounce.Rising(STALL_TIME));
     }
 
+    @Override
     public void setState(State state) {
-        if (mState != state) {
+        if (this.state != state) {
             if (state != State.IDLE) {
                 hasGamePiece = false;
             }
         }
+
+        this.state = state;
     }
 
+    @Override
     public State getState() {
-        return mState;
+        return state;
     }
 
     public void enableCoast() {
@@ -56,7 +62,14 @@ public class IntakeImpl extends Intake {
     // stall detection
 
     private boolean isMomentarilyStalling() {
-        return motor.getOutputCurrent() > STALL_CURRENT.doubleValue();
+        double current = 35.0;
+        if (state == State.INTAKING_CUBE) {
+            current = CUBE_STALL_CURRENT.doubleValue();
+        } else if (state == State.INTAKING_CONE) {
+            current = CONE_STALL_CURRENT.doubleValue();
+        }
+
+        return motor.getOutputCurrent() > current;
     }
 
     private boolean isStalling() {
@@ -65,29 +78,36 @@ public class IntakeImpl extends Intake {
 
     @Override
     public boolean hasGamePiece() {
-        return isStalling();
+        return hasGamePiece;
     }
 
     @Override
     public void periodic() {
+        motor.setVoltage(state.voltage);
 
-        if (acquiring && hasGamePiece()) {
-            setState(State.IDLE);
-        }
-
-        //TO DO
-        switch (mState) {
-            case IDLE:
+        switch (state) {
             case INTAKING_CONE:
             case INTAKING_CUBE:
+                if (stalling.get()) {
+                    hasGamePiece = true;
+                }
+
+                if (hasGamePiece) {
+                    setState(State.IDLE);
+                }
+
+                break;
+            case IDLE:
             case OUTTAKING_CONE:
             case OUTTAKING_CUBE:
             case LOW_CONE_SPIT:
             case LOW_CUBE_SPIT:
         }
 
-        SmartDashboard.putNumber("Intake Motor Speed", motor.get());
-        SmartDashboard.putNumber("Intake Current", motor.getOutputCurrent());
+        SmartDashboard.putNumber("Intake/Motor Speed", motor.get());
+        SmartDashboard.putNumber("Intake/Current", motor.getOutputCurrent());
         SmartDashboard.putBoolean("Intake/Is Stalling", isStalling());
+        SmartDashboard.putString("Intake/State", state.toString());
+        SmartDashboard.putNumber("Intake/Voltage", state.voltage);
     }
 }

@@ -18,6 +18,8 @@ public interface Settings {
 	double DT = 0.02;
     public interface Intake {
         SmartNumber STALL_TIME = new SmartNumber("Intake/Stall Time (Rising)", 0.05);
-        SmartNumber STALL_CURRENT = new SmartNumber("Intake/Stall Current", 35);
+        SmartNumber CUBE_STALL_CURRENT = new SmartNumber("Cube Intake/Stall Current", 35);
+        SmartNumber CONE_STALL_CURRENT = new SmartNumber("Cone Intake/Stall Current", 35);
+
     }
 }

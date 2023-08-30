@@ -17,8 +17,8 @@ public abstract class Intake extends SubsystemBase {
 
     // state storage
     public enum State {
-        IDLE(0.0), 
-        INTAKING_CUBE(-12.0), 
+        IDLE(0.0),
+        INTAKING_CUBE(-12.0),
         OUTTAKING_CUBE(12.0),
         
         INTAKING_CONE(12.0),
