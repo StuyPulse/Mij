@@ -16,4 +16,7 @@ import com.stuypulse.stuylib.network.SmartNumber;
  */
 public interface Settings {
 	double DT = 0.02;
+
+	public interface Swerve { 
+	}
 }
