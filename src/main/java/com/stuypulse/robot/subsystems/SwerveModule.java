@@ -4,10 +4,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.stuypulse.stuylib.control.Controller;
+import com.stuypulse.stuylib.control.angle.AngleController;
+import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
+import com.stuypulse.stuylib.math.Angle;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +34,7 @@ public class SwerveModule {
  
     // controllers
     private Controller driveController; 
-    private Controller turnController;
+    private AngleController turnController;
    
     public SwerveModule(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
         this.id = id;
@@ -45,7 +49,7 @@ public class SwerveModule {
         driveController = new PIDController(0, 0, 0) // make these constants
             .add(new MotorFeedforward(0, 0, 0).velocity());
 
-        
+        turnController = new AnglePIDController(0, 0, 0);
 
 
            
@@ -99,7 +103,18 @@ public class SwerveModule {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }
 
-    public SwerveModule getModule(){
+    public SwerveModulePosition getModulePosition(){
+        return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
+    }
+
+    public void periodic(){
+        turnMotor.setVoltage(turnController.update(
+            Angle.fromRotation2d(targetState.angle), 
+            Angle.fromRotation2d(getAngle()) ));
+        driveMotor.setVoltage(driveController.update(
+            targetState.speedMetersPerSecond,
+            getVelocity()));
+
         
     }
 

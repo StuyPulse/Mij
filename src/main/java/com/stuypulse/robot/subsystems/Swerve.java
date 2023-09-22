@@ -1,9 +1,16 @@
 package com.stuypulse.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.stuypulse.robot.constants.Settings;
+import com.stuypulse.stuylib.math.Vector2D;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 
@@ -71,7 +78,40 @@ public class Swerve {
         return offsets;
     }
 
-    public void setChassisSpeeds() {}
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] states = new SwerveModuleState[modules.length];
+        for(int i = 0; i < modules.length; i++) {
+            states[i] = modules[i].getState();
+        }
+        return states;
+    }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return kinematics.toChassisSpeeds(getModuleStates())        
+    }
+
+    public void setModuleStates(SwerveModuleState[] states) {
+        for(int i = 0; i < modules.length; i++) {
+            modules[i].setState(states[i]);
+        }
+    }
+
+    public void setChassisSpeeds(ChassisSpeeds speeds) {
+        setModuleStates(kinematics.toSwerveModuleStates(speeds));
+    }
+
+    public void drive(Vector2D translation, double rotation) {
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+            translation.y, -translation.x, -rotation, Rotation2d.fromDegrees(gyro.getAngle())
+        );
+
+        Pose2d robotVelocity = new Pose2d(
+            Settings.DT * speeds.vxMetersPerSecond,
+            Settings.DT * speeds.vyMetersPerSecond,
+            Rotation2d.fromRadians(Settings.DT * speeds.omegaRadiansPerSecond)
+        );
+        Twist2d twistVel = new Pose2d().log(robotVelocity);
+    }
     
 
 
