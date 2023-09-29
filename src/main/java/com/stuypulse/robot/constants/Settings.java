@@ -5,7 +5,6 @@
 
 package com.stuypulse.robot.constants;
 
-import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
 /*-
@@ -17,6 +16,8 @@ import com.stuypulse.stuylib.network.SmartNumber;
 public interface Settings {
 	double DT = 0.02;
 
-	public interface Swerve { 
+	public interface Swerve {
+		SmartNumber MODULE_SPEED_DEADBAND = new SmartNumber("Module speed deadband", 0.02);
+		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Maximum module speed", 5);
 	}
 }
