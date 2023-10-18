@@ -2,7 +2,9 @@ package com.stuypulse.robot.commands.swerve;
 
 import java.util.Optional;
 
-import com.stuypulse.robot.constants.Settings.Swerve;
+import com.stuypulse.robot.constants.Settings.Driver.Drive;
+import com.stuypulse.robot.constants.Settings.Driver.Turn;
+import com.stuypulse.robot.constants.Settings.Swerve.Drive.*;
 import com.stuypulse.robot.subsystems.SwerveDrive;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.streams.IStream;
@@ -42,11 +44,11 @@ public class SwerveDriveDrive extends CommandBase {
     }
 
     private boolean isWithinTurnDeadband() {
-        return Math.abs(turn.get()) < Swerve.MAX_MODULE_TURN.get();
+        return Math.abs(turn.get()) < Turn.DEADBAND.get();
     }
 
     private boolean isWithinDriveDeadband() {
-        return Math.abs(speed.get().magnitude()) < Swerve.MAX_MODULE_SPEED.get();
+        return Math.abs(speed.get().magnitude()) < Drive.DEADBAND.get();
     }
    
    @Override

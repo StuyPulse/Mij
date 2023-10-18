@@ -19,28 +19,29 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-public class SL_SwerveModule extends SwerveModule {
+public class SwerveModuleImpl extends SwerveModule {
     // data
     private final String id;
+    private final Translation2d translationOffset;
+    private final Rotation2d angleOffset;
     private SwerveModuleState targetState;
-    private Translation2d translationOffset;
-    private Rotation2d angleOffset;
 
     // turn
-    private CANSparkMax turnMotor; 
-    private SparkMaxAbsoluteEncoder turnEncoder;
+    private final CANSparkMax turnMotor; 
+    private final SparkMaxAbsoluteEncoder turnEncoder;
 
     // drive
-    private CANSparkMax driveMotor;
-    private RelativeEncoder driveEncoder; 
+    private final CANSparkMax driveMotor;
+    private final RelativeEncoder driveEncoder; 
  
     // controllers
-    private Controller driveController; 
-    private AngleController turnController;
+    private final Controller driveController; 
+    private final AngleController turnController;
    
-    public SL_SwerveModule(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
+    public SwerveModuleImpl(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
         this.id = id;
         this.translationOffset = translationOffset; 
+        this.angleOffset = angleOffset;
         
         turnMotor = new CANSparkMax(turnID, MotorType.kBrushless);
         driveMotor = new CANSparkMax(turnID, MotorType.kBrushless);
