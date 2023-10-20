@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems;
+package com.stuypulse.robot.subsystems.swerve;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.stuypulse.robot.constants.Ports;
@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive extends SubsystemBase {
+
     public final static SwerveDrive instance;
 
     static {
@@ -40,7 +41,6 @@ public class SwerveDrive extends SubsystemBase {
     }
     
     private final SwerveModuleImpl[] modules;  
-    private final FieldObject2d[] moduleObjects;
     private final SwerveDriveKinematics kinematics;
     private final AHRS gyro;
     
@@ -48,7 +48,6 @@ public class SwerveDrive extends SubsystemBase {
         this.modules = modules;
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
         gyro = new AHRS(SPI.Port.kMXP);
-        moduleObjects = new FieldObject2d[modules.length];
     }
 
     /**
@@ -97,7 +96,7 @@ public class SwerveDrive extends SubsystemBase {
      * @return The original state if the speed is greater than the deadband, otherwise a state with zero speed
      */
     public SwerveModuleState filterModuleState(SwerveModuleState state) {
-        if (Math.abs(state.speedMetersPerSecond) > Swerve.MODULE_SPEED_DEADBAND.get()) {
+        if (Math.abs(state.speedMetersPerSecond) > Swerve.MODULE_VELOCITY_DEADBAND.get()) {
             return state;
         }
 

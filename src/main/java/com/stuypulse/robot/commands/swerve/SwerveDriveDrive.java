@@ -4,13 +4,18 @@ import java.util.Optional;
 
 import com.stuypulse.robot.constants.Settings.Driver.Drive;
 import com.stuypulse.robot.constants.Settings.Driver.Turn;
-import com.stuypulse.robot.constants.Settings.Swerve.Drive.*;
-import com.stuypulse.robot.subsystems.SwerveDrive;
+import com.stuypulse.robot.constants.Settings.Driver.Turn.GyroFeedback;
+import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
+import com.stuypulse.stuylib.control.Controller;
+import com.stuypulse.stuylib.control.angle.AngleController;
+import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.input.Gamepad;
+import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.streams.IStream;
 import com.stuypulse.stuylib.streams.vectors.VStream;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class SwerveDriveDrive extends CommandBase {
@@ -23,6 +28,7 @@ public class SwerveDriveDrive extends CommandBase {
     private final Gamepad driver;
 
     private Optional<Rotation2d> holdAngle;
+    private AngleController gyroFeedback;
 
     public SwerveDriveDrive(Gamepad driver) {
         this.driver = driver;
@@ -32,10 +38,9 @@ public class SwerveDriveDrive extends CommandBase {
         turn = IStream.create(driver::getRightX);       
         
         holdAngle = Optional.empty();
+        gyroFeedback = new AnglePIDController(GyroFeedback.P, GyroFeedback.I, GyroFeedback.D);
         
         addRequirements(swerve);
-
-        
     }
 
     @Override
@@ -53,26 +58,30 @@ public class SwerveDriveDrive extends CommandBase {
    
    @Override
     public void execute() {
-        swerve.drive(speed.get(), turn.get());
-
+        double angularVel = turn.get();
 
         if(isWithinTurnDeadband()){
             if(holdAngle.isEmpty()) {
                 holdAngle = Optional.of(swerve.getGyroAngle());
             }
-
-        }
-        /*if (isWithinDriveDeadband()) {
-            if () {
-
-            }
-            if () {
-
+                 
+            if(GyroFeedback.GYRO_FEEDBACK_ENABLED.get() && !isWithinDriveDeadband()) {
+                angularVel = -gyroFeedback.update(
+                    Angle.fromRotation2d(holdAngle.get()),
+                    Angle.fromRotation2d(swerve.getGyroAngle())
+                );
             }
         }
-
         else {
+            holdAngle = Optional.empty(); 
+        }
 
-        }*/
+        if(driver.getRawStartButton() || driver.getRawSelectButton()) {
+            swerve.setXMode();
+        }
+        else {
+            swerve.drive(speed.get(), angularVel);
+        }
+
     }
 }

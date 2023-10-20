@@ -1,3 +1,4 @@
+package com.stuypulse.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -10,4 +11,7 @@ public abstract class SwerveModule extends SubsystemBase {
     public abstract SwerveModulePosition getModulePosition();
 
     public abstract void setState(SwerveModuleState state);
+
+    @Override
+    public abstract void periodic();
 }
