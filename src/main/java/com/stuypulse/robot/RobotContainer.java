@@ -1,4 +1,4 @@
-/************************ PROJECT PHIL ************************/
+/************************ PROJECT reteP************************/
 /* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
@@ -20,7 +20,7 @@ public class RobotContainer {
     // Gamepads
     public final Gamepad driver = new BootlegXbox(Ports.Gamepad.DRIVER);
     public final Gamepad operator = new BootlegXbox(Ports.Gamepad.OPERATOR);
-    
+
     // Subsystem
 
     // Autons

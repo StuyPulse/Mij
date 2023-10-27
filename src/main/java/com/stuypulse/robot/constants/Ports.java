@@ -1,4 +1,4 @@
-/************************ PROJECT PHIL ************************/
+/************************ PROJECT reteP************************/
 /* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
@@ -23,12 +23,12 @@ public interface Ports {
             int DRIVE = 12;
             int TURN = 13;
         }
-        
+
         public interface BackLeft {
             int DRIVE = 14;
             int TURN = 15;
         }
-        
+
         public interface BackRight {
             int DRIVE = 16;
             int TURN = 17;

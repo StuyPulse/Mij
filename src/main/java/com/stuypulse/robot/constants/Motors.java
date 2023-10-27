@@ -1,4 +1,4 @@
-/************************ PROJECT PHIL ************************/
+/************************ PROJECT reteP************************/
 /* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
@@ -117,6 +117,6 @@ public interface Motors {
             motor.setOpenLoopRampRate(OPEN_LOOP_RAMP_RATE);
             motor.burnFlash();
          }
-          
+
      }
 }

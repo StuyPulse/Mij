@@ -1,4 +1,4 @@
-/************************ PROJECT PHIL ************************/
+/************************ PROJECT reteP************************/
 /* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 
     /***********************/
     /*** AUTONOMOUS MODE ***/
-    /***********************/  
+    /***********************/
 
     @Override
     public void autonomousInit() {
