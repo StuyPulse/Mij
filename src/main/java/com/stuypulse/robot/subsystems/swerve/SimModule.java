@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.swerve;
 
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
@@ -59,7 +60,9 @@ public class SimModule extends SwerveModule {
         this.translationOffset = translationOffset;         
 
         driveController = new PIDController(Drive.kP, Drive.kI, Drive.kD)
+                .setOutputFilter(x -> Robot.getMatchState() == Robot.MatchState.TELEOP ? 0 : x)
             .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
+
         turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kD)
             .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN));
 

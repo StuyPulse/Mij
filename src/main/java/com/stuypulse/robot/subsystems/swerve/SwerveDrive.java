@@ -1,6 +1,7 @@
 package com.stuypulse.robot.subsystems.swerve;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
@@ -19,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,28 +30,45 @@ public class SwerveDrive extends SubsystemBase {
     public final static SwerveDrive instance;
 
     static {
-        instance = new SwerveDrive(
-            new SwerveModuleImpl(FrontRight.ID, FrontRight.MODULE_OFFSET, FrontRight.ABSOLUTE_OFFSET, Ports.Swerve.FrontRight.TURN, Ports.Swerve.FrontRight.DRIVE),
-            new SwerveModuleImpl(FrontLeft.ID, FrontLeft.MODULE_OFFSET, FrontLeft.ABSOLUTE_OFFSET, Ports.Swerve.FrontLeft.TURN, Ports.Swerve.FrontLeft.DRIVE),
-            new SwerveModuleImpl(BackLeft.ID, BackLeft.MODULE_OFFSET, BackLeft.ABSOLUTE_OFFSET, Ports.Swerve.BackLeft.TURN, Ports.Swerve.BackLeft.DRIVE),
-            new SwerveModuleImpl(BackRight.ID, BackRight.MODULE_OFFSET, BackRight.ABSOLUTE_OFFSET, Ports.Swerve.BackRight.TURN, Ports.Swerve.BackRight.DRIVE)
-        );
+        if (Robot.isReal()) {
+            instance = new SwerveDrive(
+                new SwerveModuleImpl(FrontRight.ID, FrontRight.MODULE_OFFSET, FrontRight.ABSOLUTE_OFFSET, Ports.Swerve.FrontRight.TURN, Ports.Swerve.FrontRight.DRIVE),
+                new SwerveModuleImpl(FrontLeft.ID, FrontLeft.MODULE_OFFSET, FrontLeft.ABSOLUTE_OFFSET, Ports.Swerve.FrontLeft.TURN, Ports.Swerve.FrontLeft.DRIVE),
+                new SwerveModuleImpl(BackLeft.ID, BackLeft.MODULE_OFFSET, BackLeft.ABSOLUTE_OFFSET, Ports.Swerve.BackLeft.TURN, Ports.Swerve.BackLeft.DRIVE),
+                new SwerveModuleImpl(BackRight.ID, BackRight.MODULE_OFFSET, BackRight.ABSOLUTE_OFFSET, Ports.Swerve.BackRight.TURN, Ports.Swerve.BackRight.DRIVE)
+            );
+        }
+        else {
+            instance = new SwerveDrive(
+                new SimModule(FrontRight.ID, FrontRight.MODULE_OFFSET),
+                new SimModule(FrontLeft.ID, FrontLeft.MODULE_OFFSET),
+                new SimModule(BackLeft.ID, BackLeft.MODULE_OFFSET),
+                new SimModule(BackRight.ID, BackRight.MODULE_OFFSET)
+            );
+        }
     }
 
     public static SwerveDrive getInstance() {
         return instance;
     }
     
-    private final SwerveModuleImpl[] modules;  
+    private final SwerveModule[] modules;  
     private final SwerveDriveKinematics kinematics;
     private final AHRS gyro;
+    private final FieldObject2d[] module2ds;
     
-    public SwerveDrive(SwerveModuleImpl... modules) {    
+    public SwerveDrive(SwerveModule... modules) {    
         this.modules = modules;
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
         gyro = new AHRS(SPI.Port.kMXP);
+        module2ds = new FieldObject2d[modules.length];
     }
 
+    public void initModule2ds(Field2d field) {
+        for (int i = 0; i < modules.length; i++) {
+            module2ds[i] = field.getObject(modules[i].getID() + "-2d");
+        }
+    }
     /**
      * @return Returns translation of each module relative to the center of the robot.
      */
@@ -139,6 +158,7 @@ public class SwerveDrive extends SubsystemBase {
             twistVel.dy / Settings.DT,
             twistVel.dtheta / Settings.DT
         );
+
         setChassisSpeeds(updatedSpeeds);
     }
     
@@ -199,6 +219,17 @@ public class SwerveDrive extends SubsystemBase {
     
     @Override
     public void periodic() {
+        Odometry odometry = Odometry.getInstance();
+        Pose2d pose = odometry.getPose();
+        Rotation2d angle = odometry.geRotation();
+
+        for(int i = 0; i < module2ds.length; i++) {
+            module2ds[i].setPose(new Pose2d(
+                pose.getTranslation().plus(modules[i].getOffset().rotateBy(angle)),
+                modules[i].getState().angle.plus(angle)
+            ));
+        }
+
         SmartDashboard.putNumber("Swerve/Balance Angle (deg)", getBalanceAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Gyro Pitch", getGyroPitch().getDegrees());

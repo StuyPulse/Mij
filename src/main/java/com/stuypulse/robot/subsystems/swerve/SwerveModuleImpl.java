@@ -5,6 +5,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.stuypulse.robot.Robot;
+import com.stuypulse.robot.Robot.MatchState;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
 import com.stuypulse.robot.constants.Settings.Swerve.Turn;
 import com.stuypulse.stuylib.control.Controller;
@@ -18,7 +20,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 
 public class SwerveModuleImpl extends SwerveModule {
 
@@ -52,6 +53,7 @@ public class SwerveModuleImpl extends SwerveModule {
         driveEncoder = driveMotor.getEncoder();
         
         driveController = new PIDController(Drive.kP, Drive.kI, Drive.kP)
+                .setOutputFilter(x -> Robot.getMatchState() == MatchState.TELEOP ? 0 : x)
             .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
 
         turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kP);
@@ -80,7 +82,7 @@ public class SwerveModuleImpl extends SwerveModule {
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
     }
-    
+
     public void setState(SwerveModuleState state) {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }

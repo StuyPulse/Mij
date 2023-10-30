@@ -5,6 +5,7 @@
 
 package com.stuypulse.robot.constants;
 
+import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
@@ -23,8 +24,8 @@ public interface Settings {
 
 	public interface Swerve {
         // TODO: Ask Harry for drivetrain dimensions
-        double WIDTH = Units.inchesToMeters(0);
-        double LENGTH = Units.inchesToMeters(0);
+        double WIDTH = Units.inchesToMeters(26.504); // temp for simulation
+        double LENGTH = Units.inchesToMeters(20.508); // temp for simulatoin
 
 		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.02);
 		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Swerve/Maximum module speed (rad per s)", 5); // Ask Harry for max theoretical speed
@@ -107,5 +108,9 @@ public interface Settings {
             }
         }
 
+    }
+
+    public static Vector2D vpow(Vector2D vec, double power) {
+        return vec.mul(Math.pow(vec.magnitude(), power - 1));
     }
 }
