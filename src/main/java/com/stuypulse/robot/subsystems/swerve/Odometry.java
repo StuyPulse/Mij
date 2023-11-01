@@ -1,12 +1,14 @@
 package com.stuypulse.robot.subsystems.swerve;
 
+import com.stuypulse.robot.util.Subsystem;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public abstract class Odometry extends SubsystemBase {
+public abstract class Odometry extends Subsystem {
+
     private static final Odometry instance;
 
     static { 
@@ -15,6 +17,10 @@ public abstract class Odometry extends SubsystemBase {
     
     public static Odometry getInstance() {
         return instance;
+    }
+
+    public Odometry() {
+        super("Odometry");
     }
 
     public abstract Field2d getField();

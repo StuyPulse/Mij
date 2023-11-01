@@ -44,6 +44,9 @@ public class OdometryImpl extends Odometry {
         odometryPose2d.setPose(startingPose);
 
         swerve.initModule2ds(field);
+
+        registerPeriodicFunc(this::loop);
+
         SmartDashboard.putData("Field", field);
     }
 
@@ -55,14 +58,13 @@ public class OdometryImpl extends Odometry {
         return odometry.getPoseMeters();
     }
     
-    @Override
-    public void periodic() {
+    public void loop() {
         SwerveDrive swerve = SwerveDrive.getInstance();
         odometry.update(swerve.getGyroAngle(), swerve.getModulePositions());
         odometryPose2d.setPose(getPose());
 
-        SmartDashboard.putNumber("Odometry/Odometry Pose X", odometry.getPoseMeters().getX());
-        SmartDashboard.putNumber("Odometry/Odometry Pose Y", odometry.getPoseMeters().getY());
-        SmartDashboard.putNumber("Odometry/Odometry Rotation", odometry.getPoseMeters().getRotation().getDegrees()); 
+        putNumber("Odometry Pose X", odometry.getPoseMeters().getX());
+        putNumber("Odometry Pose Y", odometry.getPoseMeters().getY());
+        putNumber("Odometry Rotation", odometry.getPoseMeters().getRotation().getDegrees()); 
     }
 }

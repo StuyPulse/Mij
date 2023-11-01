@@ -5,16 +5,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
-import com.stuypulse.robot.Robot;
-import com.stuypulse.robot.Robot.MatchState;
-import com.stuypulse.robot.constants.Settings.Swerve.Drive;
-import com.stuypulse.robot.constants.Settings.Swerve.Turn;
-import com.stuypulse.stuylib.control.Controller;
-import com.stuypulse.stuylib.control.angle.AngleController;
-import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
-import com.stuypulse.stuylib.control.feedback.PIDController;
-import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
-import com.stuypulse.stuylib.math.Angle;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,27 +13,20 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class SwerveModuleImpl extends SwerveModule {
 
-        // data
-        private final String id;
-        private final Translation2d translationOffset;
-        private final Rotation2d angleOffset;
-        private SwerveModuleState targetState;
-    
-        // turn
-        private final CANSparkMax turnMotor; 
-        private final SparkMaxAbsoluteEncoder turnEncoder;
-    
-        // drive
-        private final CANSparkMax driveMotor;
-        private final RelativeEncoder driveEncoder; 
-     
-        // controllers
-        private final Controller driveController; 
-        private final AngleController turnController;
+    // data
+    private final Rotation2d angleOffset;
+
+    // turn
+    private final CANSparkMax turnMotor; 
+    private final SparkMaxAbsoluteEncoder turnEncoder;
+
+    // drive
+    private final CANSparkMax driveMotor;
+    private final RelativeEncoder driveEncoder; 
    
     public SwerveModuleImpl(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
-        this.id = id;
-        this.translationOffset = translationOffset; 
+        super(id, translationOffset);
+        
         this.angleOffset = angleOffset;
         
         turnMotor = new CANSparkMax(turnID, MotorType.kBrushless);
@@ -52,52 +35,40 @@ public class SwerveModuleImpl extends SwerveModule {
         turnEncoder = turnMotor.getAbsoluteEncoder(Type.kDutyCycle);
         driveEncoder = driveMotor.getEncoder();
         
-        driveController = new PIDController(Drive.kP, Drive.kI, Drive.kP)
-                .setOutputFilter(x -> Robot.getMatchState() == MatchState.TELEOP ? 0 : x)
-            .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
-
-        turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kP);
+        registerPeriodicFunc(this::loopImpl);
     }
 
-    public Translation2d getOffset() {
-        return translationOffset;
-    }
-
-    public String getID() {
-        return id;
-    }
-
+    @Override
     public SwerveModuleState getState() {
         return new SwerveModuleState(getVelocity(), getAngle());
     }
 
-    public double getVelocity() {
+    private double getVelocity() {
         return driveEncoder.getVelocity();
     }
 
-    public Rotation2d getAngle() {
+    private Rotation2d getAngle() {
         return Rotation2d.fromRotations(turnEncoder.getPosition()).minus(angleOffset);
     }
 
+    @Override
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
     }
 
-    public void setState(SwerveModuleState state) {
-        targetState = SwerveModuleState.optimize(state, getAngle());
+    @Override
+    protected void setDriveVoltage(double voltage) {
+        driveMotor.setVoltage(voltage);
     }
 
     @Override
-    public void periodic() {
-        turnMotor.setVoltage(turnController.update(
-            Angle.fromRotation2d(targetState.angle), 
-            Angle.fromRotation2d(getAngle()))
-        );
+    protected void setTurnVoltage(double voltage) {
+        turnMotor.setVoltage(voltage);
+    }
 
-        driveMotor.setVoltage(driveController.update(
-            targetState.speedMetersPerSecond,
-            getVelocity())
-        );
+    public void loopImpl() {
+        putNumber("Angle", getAngle().getDegrees());
+        putNumber("Speed", getVelocity());
     }
 }
 

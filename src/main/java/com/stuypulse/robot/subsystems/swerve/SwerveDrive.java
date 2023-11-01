@@ -9,6 +9,7 @@ import com.stuypulse.robot.constants.Settings.Swerve.BackLeft;
 import com.stuypulse.robot.constants.Settings.Swerve.BackRight;
 import com.stuypulse.robot.constants.Settings.Swerve.FrontLeft;
 import com.stuypulse.robot.constants.Settings.Swerve.FrontRight;
+import com.stuypulse.robot.util.Subsystem;
 import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,10 +23,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class SwerveDrive extends SubsystemBase {
+public class SwerveDrive extends Subsystem {
 
     public final static SwerveDrive instance;
 
@@ -57,11 +56,15 @@ public class SwerveDrive extends SubsystemBase {
     private final AHRS gyro;
     private final FieldObject2d[] module2ds;
     
-    public SwerveDrive(SwerveModule... modules) {    
+    public SwerveDrive(SwerveModule... modules) {
+        super("Swerve");
+
         this.modules = modules;
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
         gyro = new AHRS(SPI.Port.kMXP);
         module2ds = new FieldObject2d[modules.length];
+
+        registerPeriodicFunc(this::loop);
     }
 
     public void initModule2ds(Field2d field) {
@@ -201,8 +204,8 @@ public class SwerveDrive extends SubsystemBase {
         double facingSlope = pitch.getTan() * yaw.getCos() + roll.getTan() * yaw.getSin();
         double maxSlope = Math.sqrt(Math.pow(roll.getTan(), 2) + Math.pow(pitch.getTan(), 2));
 
-        SmartDashboard.putNumber("Swerve/Facing Slope", facingSlope);
-        SmartDashboard.putNumber("Swerve/Max Slope", maxSlope);
+        putNumber("Facing Slope", facingSlope);
+        putNumber("Max Slope", maxSlope);
 
         return Rotation2d.fromRadians(Math.signum(facingSlope) * Math.atan(maxSlope));
     }
@@ -216,8 +219,7 @@ public class SwerveDrive extends SubsystemBase {
         });
     }
     
-    @Override
-    public void periodic() {
+    public void loop() {
         Odometry odometry = Odometry.getInstance();
         Pose2d pose = odometry.getPose();
         Rotation2d angle = odometry.getRotation();
@@ -229,15 +231,15 @@ public class SwerveDrive extends SubsystemBase {
             ));
         }
 
-        SmartDashboard.putNumber("Swerve/Balance Angle (deg)", getBalanceAngle().getDegrees());
-        SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroAngle().getDegrees());
-        SmartDashboard.putNumber("Swerve/Gyro Pitch", getGyroPitch().getDegrees());
-        SmartDashboard.putNumber("Swerve/Gyro Roll", getGyroRoll().getDegrees());
+        putNumber("Balance Angle (deg)", getBalanceAngle().getDegrees());
+        putNumber("Gyro Angle (deg)", getGyroAngle().getDegrees());
+        putNumber("Gyro Pitch", getGyroPitch().getDegrees());
+        putNumber("Gyro Roll", getGyroRoll().getDegrees());
 
-        SmartDashboard.putNumber("Swerve/Forward Acceleration (Gs)", getForwardAccelerationGs());
-        SmartDashboard.putNumber("Swerve/X Acceleration (Gs)", gyro.getWorldLinearAccelX());
-        SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getWorldLinearAccelY());
-        SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getWorldLinearAccelZ());
+        putNumber("Forward Acceleration (Gs)", getForwardAccelerationGs());
+        putNumber("X Acceleration (Gs)", gyro.getWorldLinearAccelX());
+        putNumber("Y Acceleration (Gs)", gyro.getWorldLinearAccelY());
+        putNumber("Z Acceleration (Gs)", gyro.getWorldLinearAccelZ());
     }
 
     @Override
