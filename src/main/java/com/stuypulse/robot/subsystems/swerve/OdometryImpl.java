@@ -47,6 +47,8 @@ public class OdometryImpl extends Odometry {
         SmartDashboard.putData("Field", field);
     }
 
+    
+
     public Field2d getField() {
         return field;
     }
@@ -54,6 +56,7 @@ public class OdometryImpl extends Odometry {
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
+
     
     @Override
     public void periodic() {

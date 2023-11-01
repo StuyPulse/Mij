@@ -5,6 +5,8 @@
 
 package com.stuypulse.robot.constants;
 
+
+import com.pathplanner.lib.auto.PIDConstants;
 import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
@@ -12,6 +14,7 @@ import com.stuypulse.stuylib.network.SmartNumber;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+
 
 /*-
  * File containing tunable settings for every subsystem on the robot.
@@ -48,6 +51,11 @@ public interface Settings {
             SmartNumber kS = new SmartNumber("Swerve/Drive/kV", 0.2230);
             SmartNumber kV = new SmartNumber("Swerve/Drive/kV", 2.4899);
             SmartNumber kA = new SmartNumber("Swerve/Drive/kA", 0.41763);
+        }
+
+        public interface Motion {
+            PIDConstants XY = new PIDConstants(0.7, 0, 0.02);
+            PIDConstants THETA = new PIDConstants(10, 0, 0.1);
         }
         
         // measure offsets
