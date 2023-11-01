@@ -20,7 +20,7 @@ public abstract class Odometry extends SubsystemBase {
     public abstract Field2d getField();
     public abstract Pose2d getPose();
 
-    public Rotation2d geRotation() {
+    public Rotation2d getRotation() {
         return getPose().getRotation();
     }
 

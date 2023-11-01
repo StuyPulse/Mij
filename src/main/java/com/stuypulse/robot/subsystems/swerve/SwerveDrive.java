@@ -142,8 +142,7 @@ public class SwerveDrive extends SubsystemBase {
 
     public void drive(Vector2D translation, double rotation) {
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            translation.y, -translation.x, -rotation, Rotation2d.fromDegrees(gyro.getAngle())
-        );
+            translation.y, -translation.x, -rotation, Odometry.getInstance().getRotation());
 
         // straight spinning drift fix
         Pose2d robotVelocity = new Pose2d(
@@ -221,7 +220,7 @@ public class SwerveDrive extends SubsystemBase {
     public void periodic() {
         Odometry odometry = Odometry.getInstance();
         Pose2d pose = odometry.getPose();
-        Rotation2d angle = odometry.geRotation();
+        Rotation2d angle = odometry.getRotation();
 
         for(int i = 0; i < module2ds.length; i++) {
             module2ds[i].setPose(new Pose2d(
@@ -240,4 +239,13 @@ public class SwerveDrive extends SubsystemBase {
         SmartDashboard.putNumber("Swerve/Y Acceleration (Gs)", gyro.getWorldLinearAccelY());
         SmartDashboard.putNumber("Swerve/Z Acceleration (Gs)", gyro.getWorldLinearAccelZ());
     }
+
+    @Override
+    public void simulationPeriodic() {
+        // Integrate omega in simulation and store in gyro
+        var speeds = getKinematics().toChassisSpeeds(getModuleStates());
+
+        gyro.setAngleAdjustment(gyro.getAngle() - Math.toDegrees(speeds.omegaRadiansPerSecond * Settings.DT));
+    }
+
 }

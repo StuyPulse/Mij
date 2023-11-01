@@ -12,4 +12,5 @@ public abstract class SwerveModule extends SubsystemBase {
     public abstract SwerveModulePosition getModulePosition();
 
     public abstract void setState(SwerveModuleState state);
+
 }

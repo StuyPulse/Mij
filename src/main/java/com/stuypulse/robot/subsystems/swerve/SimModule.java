@@ -26,6 +26,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.LinearSystemSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SimModule extends SwerveModule {
 
@@ -93,7 +94,7 @@ public class SimModule extends SwerveModule {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(turnSim.getOutput(0));
+        return Rotation2d.fromRadians(turnSim.getOutput(0));
     }
 
     public SwerveModulePosition getModulePosition() {
@@ -116,7 +117,12 @@ public class SimModule extends SwerveModule {
             Angle.fromRotation2d(getAngle())
         );
 
-        // TODO: add constant logging
+        SmartDashboard.putNumber("Swerve/" + id + "/Drive Voltage", driveController.getOutput());
+        SmartDashboard.putNumber("Swerve/" + id + "/Turn Voltage", turnController.getOutput());
+        SmartDashboard.putNumber("Swerve/" + id + "/Target Angle", targetState.angle.getDegrees());
+        SmartDashboard.putNumber("Swerve/" + id + "/Angle", getAngle().getDegrees());
+        SmartDashboard.putNumber("Swerve/" + id + "/Target Speed", targetState.speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve/" + id + "/Speed", getVelocity());
     }
 
     @Override
