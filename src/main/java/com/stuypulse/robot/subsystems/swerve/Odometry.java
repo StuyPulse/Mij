@@ -27,4 +27,6 @@ public abstract class Odometry extends SubsystemBase {
     public Translation2d getTranslation() {
         return getPose().getTranslation();
     }
+
+   
 }
