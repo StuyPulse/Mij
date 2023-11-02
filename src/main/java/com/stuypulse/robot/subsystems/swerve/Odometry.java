@@ -17,6 +17,7 @@ public abstract class Odometry extends SubsystemBase {
         return instance;
     }
 
+    public abstract void reset(Pose2d pose);
     public abstract Field2d getField();
     public abstract Pose2d getPose();
 
@@ -27,6 +28,4 @@ public abstract class Odometry extends SubsystemBase {
     public Translation2d getTranslation() {
         return getPose().getTranslation();
     }
-
-   
 }

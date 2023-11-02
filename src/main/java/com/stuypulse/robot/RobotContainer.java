@@ -6,14 +6,15 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.DriveAndTurnBump;
+import com.stuypulse.robot.commands.auton.Mobility;
+import com.stuypulse.robot.commands.auton.MobilityBump;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
 import com.stuypulse.robot.subsystems.swerve.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
-import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
-
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,7 +64,10 @@ public class RobotContainer {
 
     public void configureAutons() {
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
-
+        autonChooser.addOption("Mobility", new Mobility());
+        autonChooser.addOption("Mobility Bump", new MobilityBump());
+        autonChooser.addOption("Drive And Turn Bump", new DriveAndTurnBump());
+        
         SmartDashboard.putData("Autonomous", autonChooser);
     }
 

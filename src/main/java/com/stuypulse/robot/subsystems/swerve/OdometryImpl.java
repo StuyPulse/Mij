@@ -47,16 +47,27 @@ public class OdometryImpl extends Odometry {
         SmartDashboard.putData("Field", field);
     }
 
-    
-
+    @Override
     public Field2d getField() {
         return field;
     }
 
+
+    @Override
     public Pose2d getPose() {
         return odometry.getPoseMeters();
     }
 
+    @Override
+    public void reset(Pose2d pose) { 
+        SwerveDrive swerve = SwerveDrive.getInstance();
+
+        odometry.resetPosition(
+            swerve.getGyroAngle(),
+            swerve.getModulePositions(),
+            pose
+        );
+    }
     
     @Override
     public void periodic() {
