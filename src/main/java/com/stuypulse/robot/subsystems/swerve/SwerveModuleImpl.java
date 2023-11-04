@@ -20,26 +20,27 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModuleImpl extends SwerveModule {
 
-        // data
-        private final String id;
-        private final Translation2d translationOffset;
-        private final Rotation2d angleOffset;
-        private SwerveModuleState targetState;
+    // data
+    private final String id;
+    private final Translation2d translationOffset;
+    private final Rotation2d angleOffset;
+    private SwerveModuleState targetState;
+
+    // turn
+    private final CANSparkMax turnMotor; 
+    private final SparkMaxAbsoluteEncoder turnEncoder;
+
+    // drive
+    private final CANSparkMax driveMotor;
+    private final RelativeEncoder driveEncoder; 
     
-        // turn
-        private final CANSparkMax turnMotor; 
-        private final SparkMaxAbsoluteEncoder turnEncoder;
-    
-        // drive
-        private final CANSparkMax driveMotor;
-        private final RelativeEncoder driveEncoder; 
-     
-        // controllers
-        private final Controller driveController; 
-        private final AngleController turnController;
+    // controllers
+    private final Controller driveController; 
+    private final AngleController turnController;
    
     public SwerveModuleImpl(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
         this.id = id;
@@ -98,6 +99,13 @@ public class SwerveModuleImpl extends SwerveModule {
             targetState.speedMetersPerSecond,
             getVelocity())
         );
+
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", driveController.getOutput());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Turn Voltage", turnController.getOutput());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Angle", targetState.angle.getDegrees());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Speed", getVelocity());
     }
 }
 
