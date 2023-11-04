@@ -106,6 +106,7 @@ public class SwerveModuleImpl extends SwerveModule {
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Speed", getVelocity());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Raw Encoder Angle", turnEncoder.getPosition());
     }
 }
 
