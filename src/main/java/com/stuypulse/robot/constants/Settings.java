@@ -35,22 +35,22 @@ public interface Settings {
 		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (m per s)", 6.28); // Ask Harry for max theoretical turn
 
         public interface Turn {
-            SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 3.5);
+            SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 0.1);
             SmartNumber kI = new SmartNumber("Swerve/Turn/kI", 0.0);
-            SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.1);
+            SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.0);
 
-            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.25);
-            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.007);
+            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.0);
+            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.0);
         }
 
         public interface Drive {
-            SmartNumber kP = new SmartNumber("Swerve/Drive/kP", 0.8);
+            SmartNumber kP = new SmartNumber("Swerve/Drive/kP", 0.1);
             SmartNumber kI = new SmartNumber("Swerve/Drive/kI", 0.0);
             SmartNumber kD = new SmartNumber("Swerve/Drive/kD", 0.0);
 
-            SmartNumber kS = new SmartNumber("Swerve/Drive/kV", 0.2230);
-            SmartNumber kV = new SmartNumber("Swerve/Drive/kV", 2.4899);
-            SmartNumber kA = new SmartNumber("Swerve/Drive/kA", 0.41763);
+            SmartNumber kS = new SmartNumber("Swerve/Drive/kV", 0);
+            SmartNumber kV = new SmartNumber("Swerve/Drive/kV", 0);
+            SmartNumber kA = new SmartNumber("Swerve/Drive/kA", 0);
         }
 
         public interface Motion {
@@ -58,32 +58,32 @@ public interface Settings {
             PIDConstants THETA = new PIDConstants(10, 0, 0.1);
         }
         
-        // measure offsets
+        // TODO: measure offsets
  		public interface FrontRight {
             String ID = "Front Right";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0)
-                .plus(Rotation2d.fromDegrees(0));
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(65.566406);
+                // .plus(Rotation2d.fromDegrees(0));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * +0.5, LENGTH * -0.5);
         }
 
         public interface FrontLeft {
             String ID = "Front Left";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0)
-                .plus(Rotation2d.fromDegrees(270));
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(47.197266);
+                // .plus(Rotation2d.fromDegrees(270));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * +0.5, LENGTH * +0.5);
         }
 
         public interface BackLeft {
             String ID = "Back Left";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0)
-                .plus(Rotation2d.fromDegrees(180));
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(208.212891);
+                // .plus(Rotation2d.fromDegrees(180));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * -0.5, LENGTH * +0.5);
         }
 
         public interface BackRight {
             String ID = "Back Right";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(0)
-                .plus(Rotation2d.fromDegrees(90));
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(154.511719);
+                // .plus(Rotation2d.fromDegrees(90));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * -0.5, LENGTH * -0.5);
         }
 	}

@@ -1,5 +1,6 @@
 package com.stuypulse.robot.subsystems.swerve;
 
+import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -7,6 +8,7 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.Robot.MatchState;
+import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
 import com.stuypulse.robot.constants.Settings.Swerve.Turn;
 import com.stuypulse.stuylib.control.Controller;
@@ -15,11 +17,14 @@ import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.control.feedback.PIDController;
 import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
+import com.stuypulse.stuylib.streams.angles.filters.ARateLimit;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModuleImpl extends SwerveModule {
@@ -32,7 +37,7 @@ public class SwerveModuleImpl extends SwerveModule {
 
     // turn
     private final CANSparkMax turnMotor; 
-    private final SparkMaxAbsoluteEncoder turnEncoder;
+    private final CANCoder turnEncoder;
 
     // drive
     private final CANSparkMax driveMotor;
@@ -42,22 +47,25 @@ public class SwerveModuleImpl extends SwerveModule {
     private final Controller driveController; 
     private final AngleController turnController;
    
-    public SwerveModuleImpl(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID) {
+    public SwerveModuleImpl(String id, Translation2d translationOffset, Rotation2d angleOffset, int turnID, int driveID, int encoderID) {
         this.id = id;
         this.translationOffset = translationOffset; 
         this.angleOffset = angleOffset;
         
         turnMotor = new CANSparkMax(turnID, MotorType.kBrushless);
-        driveMotor = new CANSparkMax(turnID, MotorType.kBrushless);
+        driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
 
-        turnEncoder = turnMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        turnEncoder = new CANCoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
         
         driveController = new PIDController(Drive.kP, Drive.kI, Drive.kP)
                 .setOutputFilter(x -> Robot.getMatchState() == MatchState.TELEOP ? 0 : x)
             .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
 
-        turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kP);
+        turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kP)
+            .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN));
+
+        targetState = new SwerveModuleState();
     }
 
     public Translation2d getOffset() {
@@ -77,7 +85,7 @@ public class SwerveModuleImpl extends SwerveModule {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(turnEncoder.getPosition()).minus(angleOffset);
+        return Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()).minus(angleOffset);
     }
 
     public SwerveModulePosition getModulePosition() {
@@ -90,10 +98,14 @@ public class SwerveModuleImpl extends SwerveModule {
 
     @Override
     public void periodic() {
-        turnMotor.setVoltage(turnController.update(
-            Angle.fromRotation2d(targetState.angle), 
-            Angle.fromRotation2d(getAngle()))
-        );
+        turnController.update(
+            Angle.fromRotation2d(new Rotation2d()), 
+            Angle.fromRotation2d(getAngle()));
+        
+        if (Math.abs(turnController.getError().toDegrees()) > 3.0)
+            turnMotor.setVoltage(turnController.getOutput());
+        else
+            turnMotor.setVoltage(0);
 
         driveMotor.setVoltage(driveController.update(
             targetState.speedMetersPerSecond,
@@ -106,7 +118,7 @@ public class SwerveModuleImpl extends SwerveModule {
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Speed", getVelocity());
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Raw Encoder Angle", turnEncoder.getPosition());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Raw Encoder Angle", turnEncoder.getAbsolutePosition());
     }
 }
 
