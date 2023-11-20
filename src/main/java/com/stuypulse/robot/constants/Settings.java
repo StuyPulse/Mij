@@ -35,9 +35,9 @@ public interface Settings {
 		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (m per s)", 6.28); // Ask Harry for max theoretical turn
 
         public interface Turn {
-            SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 0.1);
+            SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 0.5);
             SmartNumber kI = new SmartNumber("Swerve/Turn/kI", 0.0);
-            SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.0);
+            SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.05);
 
             SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.0);
             SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.0);
