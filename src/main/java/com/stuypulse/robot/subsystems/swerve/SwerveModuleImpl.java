@@ -8,6 +8,7 @@ import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.Robot.MatchState;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
+import com.stuypulse.robot.constants.Settings.Swerve.Encoder;
 import com.stuypulse.robot.constants.Settings.Swerve.Turn;
 import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.angle.AngleController;
@@ -53,13 +54,17 @@ public class SwerveModuleImpl extends SwerveModule {
 
         turnEncoder = new CANCoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
+
+        driveEncoder.setPositionConversionFactor(Encoder.Drive.POSITION_CONVERSION);
+        driveEncoder.setVelocityConversionFactor(Encoder.Drive.VELOCITY_CONVERSION);
         
         driveController = new PIDController(Drive.kP, Drive.kI, Drive.kD)
                 .setOutputFilter(x -> Robot.getMatchState() == MatchState.TELEOP ? 0 : x)
             .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
 
         turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kD)
-            .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN));
+            .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN))
+            .setOutputFilter(x -> -x);
 
         targetState = new SwerveModuleState();
     }
@@ -98,10 +103,7 @@ public class SwerveModuleImpl extends SwerveModule {
             Angle.fromRotation2d(targetState.angle), 
             Angle.fromRotation2d(getAngle()));
         
-        // if (turnController.isDoneDegrees(10))
-        //     turnMotor.setVoltage(0);
-        // else
-            turnMotor.setVoltage(turnController.getOutput());
+        turnMotor.setVoltage(turnController.getOutput());
 
         driveMotor.setVoltage(driveController.update(
             targetState.speedMetersPerSecond,
