@@ -5,7 +5,12 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.TeleopInit;
+
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -14,6 +19,17 @@ public class Robot extends TimedRobot {
     private RobotContainer robot;
     private Command auto;
 
+    private CommandScheduler scheduler;
+
+    public enum MatchState {
+        AUTO,
+        TELEOP,
+        TEST,
+        DISABLE
+    }
+
+    private static MatchState state = MatchState.DISABLE;
+
     /*************************/
     /*** ROBOT SCHEDULEING ***/
     /*************************/
@@ -21,11 +37,18 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         robot = new RobotContainer();
+        DataLogManager.start();
+
+        scheduler = CommandScheduler.getInstance();
+        robot = new RobotContainer();
+
+        state = MatchState.DISABLE;
+        SmartDashboard.putString("Match State", state.name());
     }
 
     @Override
     public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
+        scheduler.run();
     }
 
     /*********************/
@@ -33,7 +56,10 @@ public class Robot extends TimedRobot {
     /*********************/
 
     @Override
-    public void disabledInit() {}
+    public void disabledInit() {
+        state = MatchState.DISABLE;
+        SmartDashboard.putString("Match State", state.name());
+    }
 
     @Override
     public void disabledPeriodic() {}
@@ -63,9 +89,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        state = MatchState.TELEOP;
+        SmartDashboard.putString("Match State", state.name());
         if (auto != null) {
             auto.cancel();
         }
+
+        new TeleopInit().schedule();
+        RobotContainer.setCachedAlliance(DriverStation.getAlliance());
     }
 
     @Override
@@ -88,4 +119,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testExit() {}
+
+    public static MatchState getMatchState() {
+        return state;
+    }
 }

@@ -6,11 +6,18 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
+import com.stuypulse.robot.commands.auton.DriveAndTurnBump;
+import com.stuypulse.robot.commands.auton.Mobility;
+import com.stuypulse.robot.commands.auton.MobilityBump;
+import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.subsystems.swerve.Odometry;
+import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
-import com.stuypulse.stuylib.input.gamepads.AutoGamepad;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,11 +27,15 @@ public class RobotContainer {
     // Gamepads
     public final Gamepad driver = new BootlegXbox(Ports.Gamepad.DRIVER);
     public final Gamepad operator = new BootlegXbox(Ports.Gamepad.OPERATOR);
+
+    public final SwerveDrive swerve = SwerveDrive.getInstance();
+    public final Odometry odometry = Odometry.getInstance();
     
     // Subsystem
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
+    private static Alliance cachedAlliance;
 
     // Robot container
 
@@ -38,7 +49,10 @@ public class RobotContainer {
     /*** DEFAULTS ***/
     /****************/
 
-    private void configureDefaultCommands() {}
+    private void configureDefaultCommands() {
+        // Swerve
+        swerve.setDefaultCommand(new SwerveDriveDrive(driver));
+    }
 
     /***************/
     /*** BUTTONS ***/
@@ -52,11 +66,22 @@ public class RobotContainer {
 
     public void configureAutons() {
         autonChooser.setDefaultOption("Do Nothing", new DoNothingAuton());
-
+        autonChooser.addOption("Mobility", new Mobility());
+        autonChooser.addOption("Mobility Bump", new MobilityBump());
+        autonChooser.addOption("Drive And Turn Bump", new DriveAndTurnBump());
+        
         SmartDashboard.putData("Autonomous", autonChooser);
     }
 
     public Command getAutonomousCommand() {
         return autonChooser.getSelected();
+    }
+
+    public static void setCachedAlliance(Alliance alliance) {
+        cachedAlliance = alliance;
+    }
+
+    public static Alliance getCachedAlliance() {
+        return cachedAlliance;
     }
 }
