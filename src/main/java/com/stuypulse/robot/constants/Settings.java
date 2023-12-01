@@ -26,13 +26,12 @@ public interface Settings {
 	double DT = 0.02;
 
 	public interface Swerve {
-        // TODO: Ask Harry for drivetrain dimensions
-        double WIDTH = Units.inchesToMeters(26.504); // temp for simulation
-        double LENGTH = Units.inchesToMeters(20.508); // temp for simulatoin
+        double WIDTH = Units.inchesToMeters(26);
+        double LENGTH = Units.inchesToMeters(26);
 
 		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.02);
 		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Swerve/Maximum module speed (m per s)", 5.06);
-		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (rad per s)", 6.28); // Ask Harry for max theoretical turn
+		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (rad per s)", 6.28);
 
         public interface Turn {
             SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 6.0);
@@ -58,7 +57,6 @@ public interface Settings {
             PIDConstants THETA = new PIDConstants(10, 0, 0.1);
         }
         
-        // TODO: measure offsets
  		public interface FrontRight {
             String ID = "Front Right";
             Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(65.566406);
