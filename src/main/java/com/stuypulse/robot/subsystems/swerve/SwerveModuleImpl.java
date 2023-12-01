@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.Robot.MatchState;
 import com.stuypulse.robot.constants.Settings.Swerve;
@@ -51,6 +52,9 @@ public class SwerveModuleImpl extends SwerveModule {
         
         turnMotor = new CANSparkMax(turnID, MotorType.kBrushless);
         driveMotor = new CANSparkMax(driveID, MotorType.kBrushless);
+
+        turnMotor.setIdleMode(IdleMode.kBrake);
+        driveMotor.setIdleMode(IdleMode.kBrake);
 
         turnEncoder = new CANCoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
