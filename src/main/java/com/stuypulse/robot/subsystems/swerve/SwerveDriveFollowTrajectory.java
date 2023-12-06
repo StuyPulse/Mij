@@ -108,7 +108,7 @@ public class SwerveDriveFollowTrajectory extends PPSwerveControllerCommand {
 			));
 		}
 
-		trajectory.setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(path, DriverStation.getAlliance()));
+		// trajectory.setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(path, DriverStation.getAlliance()));
 
 		super.initialize();
 	}

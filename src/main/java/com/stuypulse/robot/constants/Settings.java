@@ -53,7 +53,7 @@ public interface Settings {
         }
 
         public interface Motion {
-            PIDConstants XY = new PIDConstants(0.7, 0, 0.02);
+            PIDConstants XY = new PIDConstants(2.0, 0, 0.02);
             PIDConstants THETA = new PIDConstants(10, 0, 0.1);
         }
         

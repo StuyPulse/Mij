@@ -12,13 +12,13 @@ import com.pathplanner.lib.PathPlanner;
 import com.stuypulse.robot.subsystems.swerve.SwerveDriveFollowTrajectory;
 
 public class Mobility extends SequentialCommandGroup {
-    private static final PathConstraints CONSTRAINTS = new PathConstraints(2, 2);
+    private static final PathConstraints CONSTRAINTS = new PathConstraints(4, 2);
     
     public Mobility() {
         addCommands(
             new SwerveDriveFollowTrajectory(
                 PathPlanner.loadPath("Mobility", CONSTRAINTS)
-            ).robotRelative()
+            ).robotRelative().withStop()
         );
     }
 
