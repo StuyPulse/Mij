@@ -9,6 +9,10 @@ import com.stuypulse.robot.constants.Settings.Swerve.BackLeft;
 import com.stuypulse.robot.constants.Settings.Swerve.BackRight;
 import com.stuypulse.robot.constants.Settings.Swerve.FrontLeft;
 import com.stuypulse.robot.constants.Settings.Swerve.FrontRight;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
+import com.stuypulse.robot.subsystems.swerve.module.SimModule;
+import com.stuypulse.robot.subsystems.swerve.module.SwerveModule;
+import com.stuypulse.robot.subsystems.swerve.module.SwerveModuleImpl;
 import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;

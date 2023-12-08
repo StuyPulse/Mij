@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.subsystems.swerve.module;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;

@@ -1,4 +1,6 @@
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.subsystems.odometry;
+
+import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;

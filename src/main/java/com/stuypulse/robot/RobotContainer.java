@@ -13,7 +13,7 @@ import com.stuypulse.robot.commands.auton.MobilityBump;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwerveDriveResetHeading;
 import com.stuypulse.robot.constants.Ports;
-import com.stuypulse.robot.subsystems.swerve.Odometry;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;

@@ -3,10 +3,10 @@
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
 
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.util;
 
 import com.stuypulse.robot.constants.Settings.Swerve.Motion;
-import com.stuypulse.robot.subsystems.swerve.Odometry;
+import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 
 import edu.wpi.first.math.controller.PIDController;

@@ -1,4 +1,4 @@
-package com.stuypulse.robot.subsystems.swerve;
+package com.stuypulse.robot.subsystems.swerve.module;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
