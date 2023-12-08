@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
-import com.stuypulse.robot.subsystems.swerve.SwerveDriveFollowTrajectory;
+import com.stuypulse.robot.util.SwerveDriveFollowTrajectory;
 
 public class DriveAndTurnBump extends SequentialCommandGroup {
     private static final PathConstraints CONSTRAINTS = new PathConstraints(2, 2);

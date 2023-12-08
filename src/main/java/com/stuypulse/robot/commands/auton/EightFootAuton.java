@@ -16,7 +16,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.stuypulse.robot.subsystems.swerve.SwerveDriveFollowTrajectory;
+import com.stuypulse.robot.util.SwerveDriveFollowTrajectory;
 
 public class EightFootAuton extends SequentialCommandGroup {
     private static final PathConstraints CONSTRAINTS = new PathConstraints(0.01, 0.01);
