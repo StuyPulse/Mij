@@ -102,6 +102,11 @@ public class SwerveModuleImpl extends SwerveModule {
     }
 
     @Override
+    public void setTurnVoltage(double voltage) {
+        turnMotor.setVoltage(voltage);
+    }
+
+    @Override
     public void periodic() {
         turnController.update(
             Angle.fromRotation2d(targetState.angle), 

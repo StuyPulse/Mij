@@ -113,6 +113,7 @@ public class SwerveDrive extends SubsystemBase {
         return kinematics.toChassisSpeeds(getModuleStates());      
     }
 
+
     /**
      * Applies deadband to module state.
      * @param state
@@ -218,6 +219,12 @@ public class SwerveDrive extends SubsystemBase {
             new SwerveModuleState(0, Rotation2d.fromDegrees(315)),
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
         });
+    }
+
+    public void setTurnVoltage(double voltage) {
+        for(var module : modules) {
+            module.setTurnVoltage(voltage);
+        }
     }
     
     @Override
