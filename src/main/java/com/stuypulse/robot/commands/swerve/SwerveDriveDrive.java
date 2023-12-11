@@ -34,6 +34,10 @@ public class SwerveDriveDrive extends CommandBase {
     private Optional<Rotation2d> holdAngle;
     private AngleController gyroFeedback;
 
+    private double deadband(double x, double window) {
+        return Math.abs(x) < Math.abs(window) ? 0 : x;
+    }
+
     public SwerveDriveDrive(Gamepad driver) {
         this.driver = driver;
         swerve = SwerveDrive.getInstance();
@@ -50,10 +54,11 @@ public class SwerveDriveDrive extends CommandBase {
 
         turn = IStream.create(driver::getRightX)
             .filtered(
-                x -> SLMath.deadband(x, Turn.DEADBAND.get()),
+                x -> deadband(x, Turn.DEADBAND.get()),
                 x -> SLMath.spow(x, Turn.POWER.get()),
                 x -> x * Turn.MAX_TELEOP_TURNING.get(),
-                new LowPassFilter(Turn.RC)
+                new LowPassFilter(Turn.RC),
+                x -> deadband(x, Turn.MIN_TELEOP_TURNING.get())
             );
 
         

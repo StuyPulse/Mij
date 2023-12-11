@@ -53,34 +53,34 @@ public interface Settings {
         }
 
         public interface Motion {
-            PIDConstants XY = new PIDConstants(2.0, 0, 0.02);
-            PIDConstants THETA = new PIDConstants(10, 0, 0.1);
+            PIDConstants XY = new PIDConstants(16.7, 0, 0);
+            PIDConstants THETA = new PIDConstants(0, 0, 0);
         }
         
  		public interface FrontRight {
             String ID = "Front Right";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(65.566406);
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(71.455078);
                 // .plus(Rotation2d.fromDegrees(0));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * +0.5, LENGTH * -0.5);
         }
 
         public interface FrontLeft {
             String ID = "Front Left";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(47.197266);
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(43.857422);
                 // .plus(Rotation2d.fromDegrees(270));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * +0.5, LENGTH * +0.5);
         }
 
         public interface BackLeft {
             String ID = "Back Left";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(208.212891);
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(204.960938);
                 // .plus(Rotation2d.fromDegrees(180));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * -0.5, LENGTH * +0.5);
         }
 
         public interface BackRight {
             String ID = "Back Right";
-            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(154.511719);
+            Rotation2d ABSOLUTE_OFFSET = Rotation2d.fromDegrees(149.501953);
                 // .plus(Rotation2d.fromDegrees(90));
             Translation2d MODULE_OFFSET = new Translation2d(WIDTH * -0.5, LENGTH * -0.5);
         }
@@ -115,6 +115,7 @@ public interface Settings {
             SmartNumber POWER = new SmartNumber("Driver Settings/Turn/Power", 2);
 
             SmartNumber MAX_TELEOP_TURNING = new SmartNumber("Driver Settings/Turn/Max Turning", 6.0);
+            SmartNumber MIN_TELEOP_TURNING = new SmartNumber("Driver Settings/Turn/Min Turning", 0.05);
 
             public interface GyroFeedback {
                 SmartBoolean GYRO_FEEDBACK_ENABLED = new SmartBoolean("Driver Settings/Gyro Feedback/Enabled", true);

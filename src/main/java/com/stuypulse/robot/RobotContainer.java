@@ -13,6 +13,7 @@ import com.stuypulse.robot.commands.auton.MobilityBump;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwerveDriveResetHeading;
 import com.stuypulse.robot.constants.Ports;
+import com.stuypulse.robot.constants.Ports.Swerve;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 import com.stuypulse.robot.util.BootlegXbox;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class RobotContainer {
 
@@ -67,8 +69,6 @@ public class RobotContainer {
         driver.getDPadDown().onTrue(new SwerveDriveResetHeading(Rotation2d.fromDegrees(180)));
         driver.getDPadLeft().onTrue(new SwerveDriveResetHeading(Rotation2d.fromDegrees(90)));
         driver.getDPadRight().onTrue(new SwerveDriveResetHeading(Rotation2d.fromDegrees(270)));
-
-        driver.getLeftButton().onTrue(new InstantCommand(SwerveDrive.getInstance()::setZeroMode));
     }
 
     /**************/
