@@ -219,6 +219,15 @@ public class SwerveDrive extends SubsystemBase {
             new SwerveModuleState(0, Rotation2d.fromDegrees(45))
         });
     }
+
+    public void setZeroMode() {
+        setModuleStates(new SwerveModuleState[] {
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
+            new SwerveModuleState(0, Rotation2d.fromDegrees(0))
+        });
+    }
     
     @Override
     public void periodic() {
