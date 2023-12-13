@@ -31,13 +31,15 @@ public interface Settings {
 
 		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.03);
 		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Swerve/Maximum module speed (m per s)", 5.06);
-		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (rad per s)", 6.28);
+		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (rad per s)", 6.28); // TODO: Make this higher
 
         public interface Turn {
             SmartNumber kP = new SmartNumber("Swerve/Turn/kP", 6.0);
             SmartNumber kI = new SmartNumber("Swerve/Turn/kI", 0.0);
             SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.15);
 
+            // TODO: FIND THESE VALUES
+            SmartNumber kS = new SmartNumber("Swerve/Turn/kS", 0.0);
             SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.0);
             SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.0);
         }
