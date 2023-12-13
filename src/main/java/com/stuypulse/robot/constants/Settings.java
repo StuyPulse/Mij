@@ -26,8 +26,8 @@ public interface Settings {
 	double DT = 0.02;
 
 	public interface Swerve {
-        double WIDTH = Units.inchesToMeters(26);
-        double LENGTH = Units.inchesToMeters(26);
+        double WIDTH = Units.inchesToMeters(21);
+        double LENGTH = Units.inchesToMeters(21);
 
 		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.02);
 		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Swerve/Maximum module speed (m per s)", 5.06);
@@ -43,18 +43,18 @@ public interface Settings {
         }
 
         public interface Drive {
-            SmartNumber kP = new SmartNumber("Swerve/Drive/kP", 0.018327);
+            SmartNumber kP = new SmartNumber("Swerve/Drive/kP", 0.02);
             SmartNumber kI = new SmartNumber("Swerve/Drive/kI", 0.0);
-            SmartNumber kD = new SmartNumber("Swerve/Drive/kD", 0.0);
+            SmartNumber kD = new SmartNumber("Swerve/Drive/kD", 0.0); // test with 0.1, seems too high, maybe kA too high
 
             SmartNumber kS = new SmartNumber("Swerve/Drive/kS", 0.098993);
             SmartNumber kV = new SmartNumber("Swerve/Drive/kV", 2.4495);
-            SmartNumber kA = new SmartNumber("Swerve/Drive/kA", 0.089872);
+            SmartNumber kA = new SmartNumber("Swerve/Drive/kA", 0.35);
         }
 
         public interface Motion {
             PIDConstants XY = new PIDConstants(16.7, 0, 0);
-            PIDConstants THETA = new PIDConstants(0, 0, 0);
+            PIDConstants THETA = new PIDConstants(1, 0, 0);
         }
         
  		public interface FrontRight {

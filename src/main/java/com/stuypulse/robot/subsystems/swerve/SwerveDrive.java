@@ -228,7 +228,7 @@ public class SwerveDrive extends SubsystemBase {
             new SwerveModuleState(0, Rotation2d.fromDegrees(0))
         });
     }
-    
+
     @Override
     public void periodic() {
         Odometry odometry = Odometry.getInstance();
@@ -243,6 +243,7 @@ public class SwerveDrive extends SubsystemBase {
         }
 
         SmartDashboard.putNumber("Swerve/Balance Angle (deg)", getBalanceAngle().getDegrees());
+        SmartDashboard.putNumber("Swerve/Angular Velocity (rad per s)", getChassisSpeeds().omegaRadiansPerSecond);
         SmartDashboard.putNumber("Swerve/Gyro Angle (deg)", getGyroAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Gyro Pitch", getGyroPitch().getDegrees());
         SmartDashboard.putNumber("Swerve/Gyro Roll", getGyroRoll().getDegrees());
