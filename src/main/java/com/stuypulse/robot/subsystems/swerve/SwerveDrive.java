@@ -113,19 +113,6 @@ public class SwerveDrive extends SubsystemBase {
         return kinematics.toChassisSpeeds(getModuleStates());      
     }
 
-    /**
-     * Applies deadband to module state.
-     * @param state
-     * @return The original state if the speed is greater than the deadband, otherwise a state with zero speed
-     */
-    public SwerveModuleState filterModuleState(SwerveModuleState state) {
-        if (Math.abs(state.speedMetersPerSecond) > Swerve.MODULE_VELOCITY_DEADBAND.get()) {
-            return state;
-        }
-
-        return new SwerveModuleState(0, state.angle);
-    }
-
     public void setModuleStates(SwerveModuleState... states) {
         if (states.length != modules.length) {
             throw new IllegalArgumentException(
@@ -136,7 +123,7 @@ public class SwerveDrive extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(states, Swerve.MAX_MODULE_SPEED.get());
 
         for (int i = 0; i < modules.length; i++) {
-            modules[i].setState(filterModuleState(states[i]));
+            modules[i].setState(states[i]);
         }
     }
 

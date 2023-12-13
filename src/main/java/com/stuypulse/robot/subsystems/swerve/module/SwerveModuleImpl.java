@@ -103,20 +103,28 @@ public class SwerveModuleImpl extends SwerveModule {
 
     @Override
     public void periodic() {
+        driveController.update(
+            targetState.speedMetersPerSecond,
+            getVelocity());
+
         turnController.update(
             Angle.fromRotation2d(targetState.angle), 
             Angle.fromRotation2d(getAngle()));
         
-        turnMotor.setVoltage(turnController.getOutput());
+        if(Math.abs(targetState.speedMetersPerSecond) >= Swerve.MODULE_VELOCITY_DEADBAND.get()) {
+            driveMotor.setVoltage(driveController.getOutput() * turnController.getError().cos());
+            turnMotor.setVoltage(turnController.getOutput());
+        }
+        else {
+            driveMotor.stopMotor();
+            turnMotor.stopMotor();
+        }
 
-        driveMotor.setVoltage(driveController.update(
-            targetState.speedMetersPerSecond,
-            getVelocity())
-        );
 
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", driveController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Turn Voltage", turnController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle Error", turnController.getError().toDegrees());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/XY Error", driveController.getError());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Angle", targetState.angle.getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);

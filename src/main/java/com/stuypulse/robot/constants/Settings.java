@@ -29,7 +29,7 @@ public interface Settings {
         double WIDTH = Units.inchesToMeters(21);
         double LENGTH = Units.inchesToMeters(21);
 
-		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.02);
+		SmartNumber MODULE_VELOCITY_DEADBAND = new SmartNumber("Swerve/Module velocity deadband (m per s)", 0.03);
 		SmartNumber MAX_MODULE_SPEED = new SmartNumber("Swerve/Maximum module speed (m per s)", 5.06);
 		SmartNumber MAX_MODULE_TURN = new SmartNumber("Swerve/Maximum module turn (rad per s)", 6.28);
 
@@ -53,7 +53,7 @@ public interface Settings {
         }
 
         public interface Motion {
-            PIDConstants XY = new PIDConstants(16.7, 0, 0);
+            PIDConstants XY = new PIDConstants(4, 0, 0);
             PIDConstants THETA = new PIDConstants(1, 0, 0);
         }
         
@@ -101,7 +101,7 @@ public interface Settings {
         public interface Drive {
             SmartNumber DEADBAND = new SmartNumber("Driver Settings/Drive/Deadband", 0.03);
 
-            SmartNumber RC = new SmartNumber("Driver Settings/Drive/RC", 0.1);
+            SmartNumber RC = new SmartNumber("Driver Settings/Drive/RC", 0.2);
             SmartNumber POWER = new SmartNumber("Driver Settings/Drive/Power", 2);
 
             SmartNumber MAX_TELEOP_SPEED = new SmartNumber("Driver Settings/Drive/Max Speed", Swerve.MAX_MODULE_SPEED.get());
@@ -109,9 +109,9 @@ public interface Settings {
         }
 
         public interface Turn {
-            SmartNumber DEADBAND = new SmartNumber("Driver Settings/Turn/Deadband", 0.05);
+            SmartNumber DEADBAND = new SmartNumber("Driver Settings/Turn/Deadband", 0.1);
 
-            SmartNumber RC = new SmartNumber("Driver Settings/Turn/RC", 0.1);
+            SmartNumber RC = new SmartNumber("Driver Settings/Turn/RC", 0.2);
             SmartNumber POWER = new SmartNumber("Driver Settings/Turn/Power", 2);
 
             SmartNumber MAX_TELEOP_TURNING = new SmartNumber("Driver Settings/Turn/Max Turning", 6.0);
@@ -119,10 +119,9 @@ public interface Settings {
 
             public interface GyroFeedback {
                 SmartBoolean GYRO_FEEDBACK_ENABLED = new SmartBoolean("Driver Settings/Gyro Feedback/Enabled", true);
-
-                SmartNumber P = new SmartNumber("Driver Settings/Gyro Feedback/kP", 0.5);
-                SmartNumber I = new SmartNumber("Driver Settings/Gyro Feedback/kI", 0.0);
-                SmartNumber D = new SmartNumber("Driver Settings/Gyro Feedback/kD", 0.1);
+                SmartNumber P = new SmartNumber("Driver Settings/Gyro Feedback/kP", 6);
+                SmartNumber I = new SmartNumber("Driver Settings/Gyro Feedback/kI", 0);
+                SmartNumber D = new SmartNumber("Driver Settings/Gyro Feedback/kD", 0.2);
             }
         }
 
