@@ -10,6 +10,7 @@ import com.stuypulse.robot.commands.auton.DriveAndTurnBump;
 import com.stuypulse.robot.commands.auton.EightFootAuton;
 import com.stuypulse.robot.commands.auton.Mobility;
 import com.stuypulse.robot.commands.auton.MobilityBump;
+import com.stuypulse.robot.commands.auton.StraightlineSpin;
 import com.stuypulse.robot.commands.swerve.SwerveDriveDrive;
 import com.stuypulse.robot.commands.swerve.SwerveDriveResetHeading;
 import com.stuypulse.robot.constants.Ports;
@@ -78,7 +79,8 @@ public class RobotContainer {
     public void configureAutons() {
         autonChooser.addOption("Do Nothing", new DoNothingAuton());
         autonChooser.addOption("8 Feet", new EightFootAuton());
-        autonChooser.setDefaultOption("Mobility", new Mobility());
+        autonChooser.addOption("Mobility", new Mobility());
+        autonChooser.setDefaultOption("Straghtline Spin", new StraightlineSpin());
         autonChooser.addOption("Mobility Bump", new MobilityBump());
         autonChooser.addOption("Drive And Turn Bump", new DriveAndTurnBump());
         
