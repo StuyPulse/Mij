@@ -5,6 +5,7 @@
 
 package com.stuypulse.robot;
 
+import com.stuypulse.robot.commands.auton.ChoreoMobility;
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.DriveAndTurnBump;
 import com.stuypulse.robot.commands.auton.EightFootAuton;
@@ -80,9 +81,11 @@ public class RobotContainer {
         autonChooser.addOption("Do Nothing", new DoNothingAuton());
         autonChooser.addOption("8 Feet", new EightFootAuton());
         autonChooser.addOption("Mobility", new Mobility());
-        autonChooser.setDefaultOption("Straghtline Spin", new StraightlineSpin());
+        autonChooser.addOption("Straghtline Spin", new StraightlineSpin());
         autonChooser.addOption("Mobility Bump", new MobilityBump());
         autonChooser.addOption("Drive And Turn Bump", new DriveAndTurnBump());
+
+        autonChooser.setDefaultOption("Choreo Mobility", new ChoreoMobility());
         
         SmartDashboard.putData("Autonomous", autonChooser);
     }

@@ -38,8 +38,8 @@ public interface Settings {
             SmartNumber kI = new SmartNumber("Swerve/Turn/kI", 0.0);
             SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.15);
 
-            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.0);
-            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.0);
+            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.1);
+            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.1);
         }
 
         public interface Drive {
