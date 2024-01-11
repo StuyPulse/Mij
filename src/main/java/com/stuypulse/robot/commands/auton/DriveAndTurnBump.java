@@ -7,17 +7,18 @@ package com.stuypulse.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.stuypulse.robot.util.SwerveDriveFollowTrajectory;
 
 public class DriveAndTurnBump extends SequentialCommandGroup {
-    private static final PathConstraints CONSTRAINTS = new PathConstraints(2, 2);
+    private static final PathConstraints CONSTRAINTS = new PathConstraints(2, 2, 2, 2);
     
     public DriveAndTurnBump() {
         addCommands(
             new SwerveDriveFollowTrajectory(
-                PathPlanner.loadPath("DriveAndTurnBump", CONSTRAINTS)
+                PathPlannerPath.fromPathFile("DriveAndTurnBump")
             ).robotRelative()
         );
     }

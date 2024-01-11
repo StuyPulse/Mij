@@ -5,11 +5,19 @@
 
 package com.stuypulse.robot.util;
 
+import java.util.HashMap;
+import java.util.List;
+
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPlannerTrajectory;
+import com.pathplanner.lib.util.ReplanningConfig;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve.Motion;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -17,14 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
-import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import java.util.HashMap;
-import java.util.List;
-
-public class SwerveDriveFollowTrajectory extends PPSwerveControllerCommand {
+public class SwerveDriveFollowTrajectory extends FollowPathCommand {
 
 	public static HashMap<String, PathPlannerTrajectory> getSeparatedPaths(List<PathPlannerTrajectory> paths, String... names) {
 		if (paths.size() != names.length)
@@ -46,23 +47,31 @@ public class SwerveDriveFollowTrajectory extends PPSwerveControllerCommand {
 
 	private FieldObject2d trajectory;
 
-	public SwerveDriveFollowTrajectory(PathPlannerTrajectory path) {
+	public SwerveDriveFollowTrajectory(PathPlannerPath path) {
 
 		super(
 			path,
 			Odometry.getInstance()::getPose,
-			SwerveDrive.getInstance().getKinematics(),
-			new PIDController(Motion.XY.kP, Motion.XY.kI, Motion.XY.kD),
-			new PIDController(Motion.XY.kP, Motion.XY.kI, Motion.XY.kD),
-			new PIDController(Motion.THETA.kP, Motion.THETA.kI, Motion.THETA.kD),
-			SwerveDrive.getInstance()::setModuleStates,
-			true,
+			SwerveDrive.getInstance()::getChassisSpeeds,
+			SwerveDrive.getInstance()::setChassisSpeeds,
+			new PPHolonomicDriveController(Motion.XY, Motion.THETA, Settings.Swerve.MAX_MODULE_SPEED.get(), Settings.Swerve.WIDTH),
+			new ReplanningConfig(),
+			() -> {
+				
+
+				var alliance = DriverStation.getAlliance();
+				if (alliance.isPresent()) {
+					return alliance.get() == DriverStation.Alliance.Red;
+				}
+				return false;
+			},
 			SwerveDrive.getInstance()
+
 		);
 
 		robotRelative = false;
 		trajectory = Odometry.getInstance().getField().getObject("Trajectory");
-		this.path = path;
+		this.path = new PathPlannerTrajectory(path, SwerveDrive.getInstance().getChassisSpeeds(), new Rotation2d());
 		events = new HashMap<String, Command>();
 		shouldStop = false;
 	}
@@ -88,27 +97,27 @@ public class SwerveDriveFollowTrajectory extends PPSwerveControllerCommand {
 	}
 
 	// FINISHES AT END OF PATH FOLLOWING, NOT AFTER ALL EVENTS DONE
-	public FollowPathWithEvents withEvents() {
-		return new FollowPathWithEvents(
-			this,
-			path.getMarkers(),
-			events
-		);
-	}
+	// public FollowPathWithEvents withEvents() {
+	// 	return new FollowPathWithEvents(
+	// 		this,
+	// 		path.getMarkers(),
+	// 		events
+	// 	);
+	// }
 
 	@Override
 	public void initialize() {
 		if (robotRelative) {
-			PathPlannerState initialState = PathPlannerTrajectory.transformStateForAlliance(
-				path.getInitialState(), DriverStation.getAlliance());
+			PathPlannerTrajectory.State initialState = 
+				path.getInitialState();
 
 			Odometry.getInstance().reset(new Pose2d(
-				initialState.poseMeters.getTranslation(),
-				initialState.holonomicRotation
+				initialState.positionMeters,
+				initialState.targetHolonomicRotation
 			));
 		}
 
-		trajectory.setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(path, DriverStation.getAlliance()));
+		// trajectory.setTrajectory(PathPlannerTrajectory.transformTrajectoryForAlliance(path, DriverStation.getAlliance()));
 
 		super.initialize();
 	}
