@@ -8,8 +8,7 @@ package com.stuypulse.robot.util;
 import java.util.HashMap;
 import java.util.List;
 
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPlannerTrajectory;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -17,6 +16,7 @@ import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve.Motion;
 import com.stuypulse.robot.subsystems.odometry.Odometry;
 import com.stuypulse.robot.subsystems.swerve.SwerveDrive;
+import com.stuypulse.stuylib.math.Vector2D;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class SwerveDriveFollowTrajectory extends FollowPathCommand {
+public class SwerveDriveFollowTrajectory extends FollowPathHolonomic {
 
 	public static HashMap<String, PathPlannerTrajectory> getSeparatedPaths(List<PathPlannerTrajectory> paths, String... names) {
 		if (paths.size() != names.length)
@@ -54,11 +54,12 @@ public class SwerveDriveFollowTrajectory extends FollowPathCommand {
 			Odometry.getInstance()::getPose,
 			SwerveDrive.getInstance()::getChassisSpeeds,
 			SwerveDrive.getInstance()::setChassisSpeeds,
-			new PPHolonomicDriveController(Motion.XY, Motion.THETA, Settings.Swerve.MAX_MODULE_SPEED.get(), Settings.Swerve.WIDTH),
+			Motion.XY,
+			Motion.THETA,
+			Settings.Swerve.MAX_MODULE_SPEED.get(),
+			new Vector2D(Settings.Swerve.WIDTH / 2, Settings.Swerve.LENGTH / 2).distance(),
 			new ReplanningConfig(),
 			() -> {
-				
-
 				var alliance = DriverStation.getAlliance();
 				if (alliance.isPresent()) {
 					return alliance.get() == DriverStation.Alliance.Red;
@@ -66,7 +67,6 @@ public class SwerveDriveFollowTrajectory extends FollowPathCommand {
 				return false;
 			},
 			SwerveDrive.getInstance()
-
 		);
 
 		robotRelative = false;
