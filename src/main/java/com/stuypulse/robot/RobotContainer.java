@@ -1,9 +1,11 @@
 /************************ PROJECT PHIL ************************/
-/* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
+/* Copyright (c) 2024 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
 
 package com.stuypulse.robot;
+
+import java.util.Optional;
 
 import com.stuypulse.robot.commands.auton.DoNothingAuton;
 import com.stuypulse.robot.commands.auton.DriveAndTurnBump;
@@ -19,6 +21,7 @@ import com.stuypulse.robot.util.BootlegXbox;
 import com.stuypulse.stuylib.input.Gamepad;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -86,8 +89,8 @@ public class RobotContainer {
         return autonChooser.getSelected();
     }
 
-    public static void setCachedAlliance(Alliance alliance) {
-        cachedAlliance = alliance;
+    public static void setCachedAlliance(Optional<Alliance> alliance) {
+        cachedAlliance = DriverStation.getAlliance().get();
     }
 
     public static Alliance getCachedAlliance() {

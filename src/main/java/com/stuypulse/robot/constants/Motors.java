@@ -1,5 +1,5 @@
 /************************ PROJECT PHIL ************************/
-/* Copyright (c) 2023 StuyPulse Robotics. All rights reserved.*/
+/* Copyright (c) 2024 StuyPulse Robotics. All rights reserved.*/
 /* This work is licensed under the terms of the MIT license.  */
 /**************************************************************/
 
@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 /*-
  * File containing all of the configurations that different motors require.

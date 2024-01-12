@@ -13,7 +13,7 @@ import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.streams.angles.filters.ARateLimit;
 
-import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -39,10 +39,10 @@ public class SimModule extends SwerveModule {
         }
 
         return new LinearSystem<N2, N1, N2>(
-            Matrix.mat(Nat.N2(), Nat.N2()).fill(0.0, 1.0, 0.0, -kV / kA),
-            Matrix.mat(Nat.N2(), Nat.N1()).fill(0.0, 1.0 / kA),
-            Matrix.mat(Nat.N2(), Nat.N2()).fill(1.0, 0.0, 0.0, 1.0),
-            Matrix.mat(Nat.N2(), Nat.N1()).fill(0.0, 0.0)
+            MatBuilder.fill(Nat.N2(), Nat.N2(), 0.0, 1.0, 0.0, -kV / kA),
+            MatBuilder.fill(Nat.N2(), Nat.N1(), 0.0, 1.0 / kA),
+            MatBuilder.fill(Nat.N2(), Nat.N2(), 1.0, 0.0, 0.0, 1.0),
+            MatBuilder.fill(Nat.N2(), Nat.N1(), 0.0, 0.0)
         );
     }
 

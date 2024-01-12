@@ -12,17 +12,17 @@ import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
 import com.stuypulse.stuylib.input.Gamepad;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.math.SLMath;
-import com.stuypulse.stuylib.streams.IStream;
-import com.stuypulse.stuylib.streams.filters.LowPassFilter;
+import com.stuypulse.stuylib.streams.numbers.IStream;
+import com.stuypulse.stuylib.streams.numbers.filters.LowPassFilter;
 import com.stuypulse.stuylib.streams.vectors.VStream;
 import com.stuypulse.stuylib.streams.vectors.filters.VDeadZone;
 import com.stuypulse.stuylib.streams.vectors.filters.VLowPassFilter;
 import com.stuypulse.stuylib.streams.vectors.filters.VRateLimit;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class SwerveDriveDrive extends CommandBase {
+public class SwerveDriveDrive extends Command {
        
     private SwerveDrive swerve;
     
