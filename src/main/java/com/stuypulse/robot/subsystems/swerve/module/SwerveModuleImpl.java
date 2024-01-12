@@ -1,10 +1,10 @@
 package com.stuypulse.robot.subsystems.swerve.module;
 
-import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.Robot.MatchState;
 import com.stuypulse.robot.constants.Settings.Swerve;
@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModuleImpl extends SwerveModule {
@@ -35,7 +36,7 @@ public class SwerveModuleImpl extends SwerveModule {
 
     // turn
     private final CANSparkMax turnMotor; 
-    private final CANCoder turnEncoder;
+    private final CANcoder turnEncoder;
 
     // drive
     private final CANSparkMax driveMotor;
@@ -56,7 +57,7 @@ public class SwerveModuleImpl extends SwerveModule {
         turnMotor.setIdleMode(IdleMode.kBrake);
         driveMotor.setIdleMode(IdleMode.kBrake);
 
-        turnEncoder = new CANCoder(encoderID);
+        turnEncoder = new CANcoder(encoderID);
         driveEncoder = driveMotor.getEncoder();
 
         driveEncoder.setPositionConversionFactor(Encoder.Drive.POSITION_CONVERSION);
@@ -90,7 +91,7 @@ public class SwerveModuleImpl extends SwerveModule {
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(turnEncoder.getAbsolutePosition()).minus(angleOffset);
+        return Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble()).minus(angleOffset);
     }
 
     public SwerveModulePosition getModulePosition() {
@@ -121,7 +122,7 @@ public class SwerveModuleImpl extends SwerveModule {
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Speed", getVelocity());
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Raw Encoder Angle", turnEncoder.getAbsolutePosition());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Raw Encoder Angle", Units.rotationsToDegrees(turnEncoder.getAbsolutePosition().getValueAsDouble()));
     }
 }
 
