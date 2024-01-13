@@ -13,4 +13,7 @@ public abstract class SwerveModule extends SubsystemBase {
 
     public abstract void setState(SwerveModuleState state);
 
+    public abstract void setDriveVoltage(double voltage);
+    public abstract double getDriveVoltage();
+
 }

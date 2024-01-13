@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.Robot.MatchState;
+import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
 import com.stuypulse.robot.constants.Settings.Swerve.Encoder;
@@ -74,14 +75,27 @@ public class SwerveModuleImpl extends SwerveModule {
         targetState = new SwerveModuleState();
     }
 
+    @Override
     public Translation2d getOffset() {
         return translationOffset;
     }
 
+    @Override
     public String getID() {
         return id;
     }
 
+    @Override
+    public void setDriveVoltage(double voltage) {
+        driveMotor.setVoltage(voltage);
+    }
+
+    @Override
+    public double getDriveVoltage() {
+        return driveMotor.getBusVoltage();
+    }
+
+    @Override
     public SwerveModuleState getState() {
         return new SwerveModuleState(getVelocity(), getAngle());
     }
@@ -94,28 +108,31 @@ public class SwerveModuleImpl extends SwerveModule {
         return Rotation2d.fromRotations(turnEncoder.getAbsolutePosition().getValueAsDouble()).minus(angleOffset);
     }
 
+    @Override
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
     }
 
+    @Override
     public void setState(SwerveModuleState state) {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }
 
     @Override
     public void periodic() {
-        turnController.update(
-            Angle.fromRotation2d(targetState.angle), 
-            Angle.fromRotation2d(getAngle()));
-        
-        turnMotor.setVoltage(turnController.getOutput());
+        if(!Settings.SYS_ID.get()) {
+            turnMotor.setVoltage(turnController.update(
+                Angle.fromRotation2d(targetState.angle), 
+                Angle.fromRotation2d(getAngle())
+            ));
 
-        driveMotor.setVoltage(driveController.update(
-            targetState.speedMetersPerSecond,
-            getVelocity())
-        );
+            driveMotor.setVoltage(driveController.update(
+                targetState.speedMetersPerSecond,
+                getVelocity()
+            ));
+        }
 
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", driveController.getOutput());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", Settings.SYS_ID.get() ? getDriveVoltage() : driveController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Turn Voltage", turnController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle Error", turnController.getError().toDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Angle", targetState.angle.getDegrees());

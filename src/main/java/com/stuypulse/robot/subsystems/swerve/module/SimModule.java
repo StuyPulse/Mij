@@ -56,6 +56,8 @@ public class SimModule extends SwerveModule {
     private LinearSystemSim<N2, N1, N2> driveSim;
     private LinearSystemSim<N2, N1, N1> turnSim;
 
+    private double voltage;
+
     public SimModule(String id, Translation2d translationOffset) {
         this.id = id;
         this.translationOffset = translationOffset;         
@@ -73,14 +75,28 @@ public class SimModule extends SwerveModule {
         targetState = new SwerveModuleState();
     }
 
+    @Override
     public String getID() {
         return id;
     }
 
+    @Override
     public Translation2d getOffset() {
         return translationOffset;
     }
 
+    @Override
+    public void setDriveVoltage(double voltage) {
+        this.voltage = voltage;
+        driveSim.setInput(voltage); 
+    }
+
+    @Override
+    public double getDriveVoltage() {
+        return voltage;
+    }
+
+    @Override
     public SwerveModuleState getState() {
         return new SwerveModuleState(getVelocity(), getAngle());
     }
@@ -97,10 +113,12 @@ public class SimModule extends SwerveModule {
         return Rotation2d.fromRadians(turnSim.getOutput(0));
     }
 
+    @Override
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(getDistance(), getAngle());
     }
         
+    @Override
     public void setState(SwerveModuleState state) {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }
@@ -117,8 +135,8 @@ public class SimModule extends SwerveModule {
             Angle.fromRotation2d(getAngle())
         );
 
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", driveController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Turn Voltage", turnController.getOutput());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", Settings.SYS_ID.get() ? getDriveVoltage() : driveController.getOutput());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Angle", targetState.angle.getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
@@ -127,13 +145,14 @@ public class SimModule extends SwerveModule {
 
     @Override
     public void simulationPeriodic() {
-        driveSim.setInput(driveController.getOutput());
-        driveSim.update(Settings.DT);
+        if(!Settings.SYS_ID.get()) {
+            driveSim.setInput(driveController.getOutput());
+            turnSim.setInput(turnController.getOutput());
+        }
 
-        turnSim.setInput(turnController.getOutput());
+        driveSim.update(Settings.DT);
         turnSim.update(Settings.DT);
 
-       // understand how it works
         RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(
             turnSim.getCurrentDrawAmps() + driveSim.getCurrentDrawAmps()
         ));

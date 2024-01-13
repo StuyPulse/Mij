@@ -1,5 +1,9 @@
 package com.stuypulse.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Ports;
@@ -23,13 +27,40 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class SwerveDrive extends SubsystemBase {
+
+    protected SysIdRoutine sysIdRoutine;
+
+    public class SysId {
+        public Command quasistaticForward() {
+            return sysIdRoutine.quasistatic(Direction.kForward);
+        }
+
+        public Command quasistaticReverse() {
+            return sysIdRoutine.quasistatic(Direction.kReverse);
+        }
+
+        public Command dynamicForward() {
+            return sysIdRoutine.dynamic(Direction.kForward);
+        }
+
+        public Command dynamicReverse() {
+            return sysIdRoutine.dynamic(Direction.kReverse);
+        }
+    }
+
+    public SysId sysId = new SysId();
 
     public final static SwerveDrive instance;
 
@@ -66,6 +97,27 @@ public class SwerveDrive extends SubsystemBase {
         kinematics = new SwerveDriveKinematics(getModuleOffsets());
         gyro = new AHRS(SPI.Port.kMXP);
         module2ds = new FieldObject2d[modules.length];
+
+        sysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                (Measure<Voltage> voltage) -> {
+                    for(int i = 0; i < modules.length; i++) {
+                        modules[i].setDriveVoltage(voltage.in(Volts));
+                    }
+                },
+                log -> {
+                    for(int i = 0; i < modules.length; i++) {
+                        SwerveModule module = modules[i];
+                        log.motor(module.getID())
+                            .voltage(Volts.of(module.getDriveVoltage()))
+                            .linearPosition(Meters.of(module.getModulePosition().distanceMeters))
+                            .linearVelocity(MetersPerSecond.of(module.getState().speedMetersPerSecond));
+                    }
+                },
+                this
+            )
+        );
     }
 
     public void initModule2ds(Field2d field) {
@@ -247,7 +299,7 @@ public class SwerveDrive extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         // Integrate omega in simulation and store in gyro
-        var speeds = getKinematics().toChassisSpeeds(getModuleStates());
+        ChassisSpeeds speeds = getKinematics().toChassisSpeeds(getModuleStates());
 
         gyro.setAngleAdjustment(gyro.getAngle() - Math.toDegrees(speeds.omegaRadiansPerSecond * Settings.DT));
     }

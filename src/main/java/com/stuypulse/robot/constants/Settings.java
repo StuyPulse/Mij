@@ -24,6 +24,7 @@ import edu.wpi.first.math.util.Units;
  */
 public interface Settings {
 	double DT = 0.02;
+    SmartBoolean SYS_ID = new SmartBoolean("SysId", true);
 
 	public interface Swerve {
         double WIDTH = Units.inchesToMeters(26);
@@ -38,8 +39,8 @@ public interface Settings {
             SmartNumber kI = new SmartNumber("Swerve/Turn/kI", 0.0);
             SmartNumber kD = new SmartNumber("Swerve/Turn/kD", 0.15);
 
-            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 0.0);
-            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 0.0);
+            SmartNumber kV = new SmartNumber("Swerve/Turn/kV", 1.0);
+            SmartNumber kA = new SmartNumber("Swerve/Turn/kA", 1.0);
         }
 
         public interface Drive {
