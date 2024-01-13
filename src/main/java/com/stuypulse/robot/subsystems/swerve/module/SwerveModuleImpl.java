@@ -98,7 +98,7 @@ public class SwerveModuleImpl extends SwerveModule {
         return new SwerveModulePosition(driveEncoder.getPosition(), getAngle());
     }
 
-    public void setState(SwerveModuleState state) {
+    public void setTargetState(SwerveModuleState state) {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }
 

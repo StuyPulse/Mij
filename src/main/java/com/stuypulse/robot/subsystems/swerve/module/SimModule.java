@@ -101,7 +101,7 @@ public class SimModule extends SwerveModule {
         return new SwerveModulePosition(getDistance(), getAngle());
     }
         
-    public void setState(SwerveModuleState state) {
+    public void setTargetState(SwerveModuleState state) {
         targetState = SwerveModuleState.optimize(state, getAngle());
     }
 
