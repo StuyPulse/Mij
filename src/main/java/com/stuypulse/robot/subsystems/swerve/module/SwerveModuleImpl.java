@@ -122,7 +122,7 @@ public class SwerveModuleImpl extends SwerveModule {
     public void periodic() {
         if(!Settings.SYS_ID.get()) {
             turnMotor.setVoltage(turnController.update(
-                Angle.fromRotation2d(targetState.angle), 
+                Angle.kZero, 
                 Angle.fromRotation2d(getAngle())
             ));
 
