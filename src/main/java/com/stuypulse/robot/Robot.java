@@ -6,7 +6,6 @@
 package com.stuypulse.robot;
 
 import com.stuypulse.robot.commands.TeleopInit;
-import com.stuypulse.robot.commands.swerve.SwerveDriveResetHeading;
 
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -72,8 +71,6 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         auto = robot.getAutonomousCommand();
-
-        new SwerveDriveResetHeading().schedule();
 
         if (auto != null) {
             auto.schedule();

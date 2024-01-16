@@ -1,22 +1,17 @@
 package com.stuypulse.robot.subsystems.swerve.module;
 
-import com.stuypulse.robot.Robot;
 import com.stuypulse.robot.constants.Settings;
 import com.stuypulse.robot.constants.Settings.Swerve;
 import com.stuypulse.robot.constants.Settings.Swerve.Drive;
 import com.stuypulse.robot.constants.Settings.Swerve.Turn;
-import com.stuypulse.stuylib.control.Controller;
 import com.stuypulse.stuylib.control.angle.AngleController;
 import com.stuypulse.stuylib.control.angle.feedback.AnglePIDController;
-import com.stuypulse.stuylib.control.feedback.PIDController;
-import com.stuypulse.stuylib.control.feedforward.MotorFeedforward;
 import com.stuypulse.stuylib.math.Angle;
 import com.stuypulse.stuylib.streams.angles.filters.ARateLimit;
 
 import edu.wpi.first.math.MatBuilder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
@@ -47,10 +42,6 @@ public class SimModule extends SwerveModule {
     }
 
     private final String id;
-    private final Translation2d translationOffset;
-    private SwerveModuleState targetState;
-
-    private Controller driveController;
     private AngleController turnController;
 
     private LinearSystemSim<N2, N1, N2> driveSim;
@@ -58,31 +49,19 @@ public class SimModule extends SwerveModule {
 
     private double voltage;
 
-    public SimModule(String id, Translation2d translationOffset) {
+    public SimModule(String id) {
         this.id = id;
-        this.translationOffset = translationOffset;         
-
-        driveController = new PIDController(Drive.kP, Drive.kI, Drive.kD)
-                .setOutputFilter(x -> Robot.getMatchState() == Robot.MatchState.TELEOP ? 0 : x)
-            .add(new MotorFeedforward(Drive.kS, Drive.kV, Drive.kA).velocity());
 
         turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kD)
             .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN));
 
         driveSim = new LinearSystemSim<>(identifyVelocityPositionSystem(Drive.kV.get(), Drive.kA.get()));
         turnSim = new LinearSystemSim<N2, N1, N1>(LinearSystemId.identifyPositionSystem(Turn.kV.get(), Turn.kA.get()));
-
-        targetState = new SwerveModuleState();
     }
 
     @Override
     public String getID() {
         return id;
-    }
-
-    @Override
-    public Translation2d getOffset() {
-        return translationOffset;
     }
 
     @Override
@@ -119,37 +98,20 @@ public class SimModule extends SwerveModule {
     }
         
     @Override
-    public void setState(SwerveModuleState state) {
-        targetState = SwerveModuleState.optimize(state, getAngle());
-    }
-
-    @Override
     public void periodic() {
-        driveController.update(
-            targetState.speedMetersPerSecond,
-            getVelocity()
-        );
-
         turnController.update(
-            Angle.fromRotation2d(targetState.angle),
+            Angle.kZero,
             Angle.fromRotation2d(getAngle())
         );
 
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Turn Voltage", turnController.getOutput());
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", Settings.SYS_ID.get() ? getDriveVoltage() : driveController.getOutput());
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Angle", targetState.angle.getDegrees());
+        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Drive Voltage", getDriveVoltage());
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Angle", getAngle().getDegrees());
-        SmartDashboard.putNumber("Swerve/Modules/" + id + "/Target Speed", targetState.speedMetersPerSecond);
         SmartDashboard.putNumber("Swerve/Modules/" + id + "/Speed", getVelocity());
     }
 
     @Override
     public void simulationPeriodic() {
-        if(!Settings.SYS_ID.get()) {
-            driveSim.setInput(driveController.getOutput());
-            turnSim.setInput(turnController.getOutput());
-        }
-
         driveSim.update(Settings.DT);
         turnSim.update(Settings.DT);
 

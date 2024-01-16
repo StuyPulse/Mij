@@ -24,7 +24,6 @@ import edu.wpi.first.math.util.Units;
  */
 public interface Settings {
 	double DT = 0.02;
-    SmartBoolean SYS_ID = new SmartBoolean("SysId", true);
 
 	public interface Swerve {
         double WIDTH = Units.inchesToMeters(26);
@@ -98,38 +97,4 @@ public interface Settings {
             }
         }
 	}
-    
-    public interface Driver {
-        public interface Drive {
-            SmartNumber DEADBAND = new SmartNumber("Driver Settings/Drive/Deadband", 0.03);
-
-            SmartNumber RC = new SmartNumber("Driver Settings/Drive/RC", 0.1);
-            SmartNumber POWER = new SmartNumber("Driver Settings/Drive/Power", 2);
-
-            SmartNumber MAX_TELEOP_SPEED = new SmartNumber("Driver Settings/Drive/Max Speed", Swerve.MAX_MODULE_SPEED.get());
-            SmartNumber MAX_TELEOP_ACCEL = new SmartNumber("Driver Settings/Drive/Max Accleration", 15);
-        }
-
-        public interface Turn {
-            SmartNumber DEADBAND = new SmartNumber("Driver Settings/Turn/Deadband", 0.05);
-
-            SmartNumber RC = new SmartNumber("Driver Settings/Turn/RC", 0.1);
-            SmartNumber POWER = new SmartNumber("Driver Settings/Turn/Power", 2);
-
-            SmartNumber MAX_TELEOP_TURNING = new SmartNumber("Driver Settings/Turn/Max Turning", 6.0);
-
-            public interface GyroFeedback {
-                SmartBoolean GYRO_FEEDBACK_ENABLED = new SmartBoolean("Driver Settings/Gyro Feedback/Enabled", true);
-
-                SmartNumber P = new SmartNumber("Driver Settings/Gyro Feedback/kP", 0.5);
-                SmartNumber I = new SmartNumber("Driver Settings/Gyro Feedback/kI", 0.0);
-                SmartNumber D = new SmartNumber("Driver Settings/Gyro Feedback/kD", 0.1);
-            }
-        }
-
-    }
-
-    public static Vector2D vpow(Vector2D vec, double power) {
-        return vec.mul(Math.pow(vec.magnitude(), power - 1));
-    }
 }
