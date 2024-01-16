@@ -53,6 +53,8 @@ public class SwerveModuleImpl extends SwerveModule {
         turnController = new AnglePIDController(Turn.kP, Turn.kI, Turn.kD)
             .setSetpointFilter(new ARateLimit(Swerve.MAX_MODULE_TURN))
             .setOutputFilter(x -> -x);
+        
+        setDriveVoltage(0);
     }
 
     @Override

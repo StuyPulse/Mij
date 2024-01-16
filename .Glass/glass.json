@@ -41,6 +41,9 @@
       "/SmartDashboard/Field": "Field2d"
     }
   },
+  "NetworkTables Info": {
+    "visible": true
+  },
   "NetworkTables Settings": {
     "mode": "Client (NT3)",
     "serverTeam": "694"
@@ -70,7 +73,13 @@
     "Plot <1>": {
       "plots": [
         {
-          "height": 769,
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 0,
           "series": [
             {
               "color": [
@@ -124,7 +133,13 @@
     "Plot <2>": {
       "plots": [
         {
-          "height": 726,
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 0,
           "series": [
             {
               "color": [
@@ -163,6 +178,19 @@
               "id": "NT:/SmartDashboard/Swerve/Modules/Back Left/Turn Voltage"
             }
           ]
+        }
+      ]
+    },
+    "Plot <3>": {
+      "plots": [
+        {
+          "backgroundColor": [
+            0.0,
+            0.0,
+            0.0,
+            0.8500000238418579
+          ],
+          "height": 332
         }
       ]
     }

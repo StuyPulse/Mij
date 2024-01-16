@@ -21,6 +21,16 @@ import com.stuypulse.robot.subsystems.swerve.module.SwerveModuleImpl;
 
 public class SysId extends SubsystemBase {
 
+    private static final SysId instance;
+
+    static {
+        instance = new SysId();
+    }
+
+    public static SysId getInstance() {
+        return instance;
+    }
+
    private final SysIdRoutine sysIdRoutine;
 
    public Command quasistaticForward() {

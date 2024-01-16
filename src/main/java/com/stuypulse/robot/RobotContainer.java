@@ -30,7 +30,7 @@ public class RobotContainer {
     
     // Subsystem
     // public final TestDrive testDrive = new TestDriveSim();
-    public final SysId swerve = new SysId();
+    public final SysId swerve = SysId.getInstance();
 
     // Autons
     private static SendableChooser<Command> autonChooser = new SendableChooser<>();
