@@ -11,6 +11,7 @@ import com.stuypulse.stuylib.math.Vector2D;
 import com.stuypulse.stuylib.network.SmartBoolean;
 import com.stuypulse.stuylib.network.SmartNumber;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -126,6 +127,46 @@ public interface Settings {
             }
         }
 
+    }
+    
+    public interface Vision {
+        double MAX_USE_DISTANCE = 3;
+        double MIN_USE_DISTANCE  = Units.inchesToMeters(5);
+        double MIN_USE_ANGLE = 0;
+        double MAX_USE_ANGLE = 50;
+
+        public interface Limelight {
+            String FIRST_LIMELIGHT = "limelight";
+            
+            String[] LIMELIGHTS = {
+                "limelight"
+            };
+
+            int[] PORTS = {5800, 5801, 5802, 5803, 5804, 5805};
+            Pose3d[] POSITIONS = new Pose3d[] {
+                new Pose3d() // TODO: determine these values when Limelight is put on
+            };
+        }
+
+        public interface NoteDetection {
+            SmartNumber DEBOUNCE_TIME = new SmartNumber("Note Detection/Debounce Time", 0.15);
+            SmartNumber TARGET_NOTE_DISTANCE = new SmartNumber("Note Detection/Target Note Distance", 0.5);
+
+            SmartNumber THRESHOLD_X = new SmartNumber("Note Detection/X Threshold", 0.08);
+            SmartNumber THRESHOLD_Y = new SmartNumber("Note Detection/Y Threshold", 0.1);
+            SmartNumber THRESHOLD_ANGLE = new SmartNumber("Note Detection/Angle Threshold", 0.1);
+
+            public interface Translation {
+                SmartNumber P = new SmartNumber("Note Detection/Translation/kP", 1);
+                SmartNumber I = new SmartNumber("Note Detection/Translation/kI", 0);
+                SmartNumber D = new SmartNumber("Note Detection/Translation/kD", 0);
+            }
+            public interface Rotation {
+                SmartNumber P = new SmartNumber("Note Detection/Rotation/kP", 1);
+                SmartNumber I = new SmartNumber("Note Detection/Rotation/kI", 0);
+                SmartNumber D = new SmartNumber("Note Detection/Rotation/kD", 0);
+            }
+        }
     }
 
     public static Vector2D vpow(Vector2D vec, double power) {
